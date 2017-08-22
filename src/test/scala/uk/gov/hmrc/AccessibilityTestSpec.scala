@@ -21,7 +21,10 @@ import org.scalatest.{FunSpec, Matchers}
 
 class AccessibilityTestSpec extends FunSpec with Matchers with MockitoSugar {
 
-  describe("empty unit test for now") {
+  describe("empty unit test") {
+    it("should do nothing right now") {
+
+    }
 
   }
 
