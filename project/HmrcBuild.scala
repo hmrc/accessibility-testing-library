@@ -33,11 +33,11 @@ object HmrcBuild extends Build {
       scalaVersion := "2.11.11",
       libraryDependencies ++= AppDependencies(),
       crossScalaVersions := Seq("2.11.7"),
-      resolvers := Seq(
+      resolvers ++= Seq(
         "hmrc-snapshots" at hmrcRepoHost + "/content/repositories/hmrc-snapshots",
-        Resolver.bintrayRepo("hmrc", "releases"),
-        "typesafe-releases" at "http://repo.typesafe.com/typesafe/releases/"
-      )
+        "hmrc-releases" at hmrcRepoHost + "/content/repositories/hmrc-releases",
+        "typesafe-releases" at hmrcRepoHost + "/content/repositories/typesafe-releases",
+        "hmrc-releases-bintray" at "https://hmrc.bintray.com/releases/")
     )
 }
 
@@ -65,7 +65,21 @@ private object AppDependencies {
       override lazy val test = Seq(
         "com.typesafe.play" %% "play-test" % PlayVersion.current % scope,
         "com.typesafe.play" %% "play-specs2" % PlayVersion.current % scope,
-        "org.mockito" % "mockito-all" % "1.10.19" % "test"
+        "org.mockito" % "mockito-all" % "1.10.19" % "test",
+      "uk.gov.hmrc"%%"scala-webdriver"%"5.4.0",
+      "org.seleniumhq.selenium"%"selenium-firefox-driver"%"2.53.0",
+      "org.seleniumhq.selenium"%"selenium-java"%"2.53.0",
+      "org.seleniumhq.selenium"%"selenium-htmlunit-driver"%"2.52.0",
+      "uk.gov.hmrc"%"time_2.11"%"1.1.0",
+      "com.typesafe.play" %% "play-json" % "2.3.0",
+      "org.scalatest"%"scalatest_2.11"%"2.2.1",
+      "org.pegdown"%"pegdown"%"1.1.0"%"test",
+      "info.cukes"%"cucumber-scala_2.11"%"1.2.2",
+      "info.cukes"%"cucumber-junit"%"1.2.2",
+      "info.cukes"%"cucumber-picocontainer"%"1.2.2",
+      "junit"%"junit"%"4.11"%"test",
+      "com.novocode" % "junit-interface" % "0.11" % "test",
+      "org.scalaj"%%"scalaj-http"%"0.3.16"
       )
     }.test
   }
