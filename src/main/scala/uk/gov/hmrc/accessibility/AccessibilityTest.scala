@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc
+package uk.gov.hmrc.accessibility
 
 import java.security.MessageDigest
 import java.util.logging.{Level, Logger}
