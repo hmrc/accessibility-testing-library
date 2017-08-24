@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc
 
-import org.scalatest.mockito.MockitoSugar
+import org.scalatest.mock.MockitoSugar
 import org.scalatest.{FunSpec, Matchers}
 
 class AccessibilityTestSpec extends FunSpec with Matchers with MockitoSugar {
