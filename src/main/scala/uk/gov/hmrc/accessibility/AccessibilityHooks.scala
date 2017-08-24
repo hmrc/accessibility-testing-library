@@ -14,18 +14,20 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc
+package uk.gov.hmrc.accessibility
 
-import org.scalatest.mock.MockitoSugar
-import org.scalatest.{FunSpec, Matchers}
+import cucumber.api.Scenario
+import cucumber.api.java.{After, Before}
+import cucumber.api.scala.{EN, ScalaDsl}
 
-class AccessibilityTestSpec extends FunSpec with Matchers with MockitoSugar {
-
-  describe("empty unit test") {
-    it("should do nothing right now") {
-
-    }
-
+class AccessibilityHooks extends ScalaDsl with EN {
+  @Before
+  def staticScenarioRef(scenario : Scenario): Unit = {
+    AccessibilityTester.startScenario(scenario)
   }
 
+  @After
+  def outputScenarioSummary(): Unit = {
+    AccessibilityTester.endScenario()
+  }
 }

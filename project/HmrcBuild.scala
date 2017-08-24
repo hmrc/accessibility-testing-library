@@ -49,7 +49,8 @@ private object AppDependencies {
     "info.cukes" % "cucumber-scala_2.11" % "1.2.2",
     "info.cukes" % "cucumber-java" % "1.2.2",
     "junit" % "junit" % "4.11" % "test",
-    "com.novocode" % "junit-interface" % "0.11" % "test"
+    "com.novocode" % "junit-interface" % "0.11" % "test",
+    "org.jsoup" % "jsoup" % "1.10.3" % "test"
   )
 
   def apply() : Seq[ModuleID] = test
