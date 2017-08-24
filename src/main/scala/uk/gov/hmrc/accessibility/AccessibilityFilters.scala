@@ -32,6 +32,4 @@ object AccessibilityFilters {
   def emptyFilter : PartialFunction[AccessibilityResult, Boolean] = {
     case _ => true
   }
-
-  def defaultFilter : PartialFunction[AccessibilityResult, Boolean] = headerFooterFilter orElse webChatFilter orElse emptyFilter
 }
