@@ -17,11 +17,9 @@
 package uk.gov.hmrc.accessibility
 
 import java.security.MessageDigest
-import java.util.logging.{Level, Logger}
+import java.util.logging.Logger
 import cucumber.api.Scenario
 import org.openqa.selenium.{JavascriptExecutor, WebDriver}
-import scala.collection.JavaConverters._
-import scala.io.Source
 
 object AccessibilityTester {
   private var scenario: Scenario = _
@@ -57,7 +55,6 @@ object AccessibilityTester {
         scenarioResults ++= data
         scenario.write(s"<h3>Found ${data.size} issues on ${driver.getTitle} (${driver.getCurrentUrl})</h3>\n${AccessibilityReport.makeTable(data)}")
       }
-
     } catch {
       case ex : ClassCastException => Logger.getLogger(AccessibilityTester.getClass.getName).warning(
         s"""

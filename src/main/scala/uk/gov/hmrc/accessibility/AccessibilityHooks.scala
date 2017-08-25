@@ -22,12 +22,12 @@ import cucumber.api.scala.{EN, ScalaDsl}
 
 class AccessibilityHooks extends ScalaDsl with EN {
   @Before
-  def staticScenarioRef(scenario : Scenario): Unit = {
+  def startScenario(scenario : Scenario): Unit = {
     AccessibilityTester.startScenario(scenario)
   }
 
   @After
-  def outputScenarioSummary(): Unit = {
+  def endScenario(): Unit = {
     AccessibilityTester.endScenario()
   }
 }
