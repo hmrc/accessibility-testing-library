@@ -29,7 +29,9 @@ object AccessibilityTester {
 
   private var cache : Map[String,Seq[AccessibilityResult]] = Map.empty
   private lazy val digest = MessageDigest.getInstance("SHA1")
-  private lazy val hashcodeOf = {x : String => digest.digest(x.getBytes()).map(0xFF & _).map { "%02x".format(_) }.foldLeft(""){_ + _}}
+  private def hashcodeOf (source: String) : String = {
+    digest.digest(source.getBytes()).map(0xFF & _).map { "%02x".format(_) }.foldLeft(""){_ + _}
+  }
 
   def startScenario(scenario: Scenario): Unit = {
     this.scenario = scenario
