@@ -27,7 +27,6 @@ object AccessibilityTester {
   private var scenario: Scenario = _
   private var scenarioResults : Seq[AccessibilityResult] = Seq.empty
 
-  private var hasRun = false
   private var cache : Map[String,Seq[AccessibilityResult]] = Map.empty
   private lazy val digest = MessageDigest.getInstance("SHA1")
   private lazy val hashcodeOf = {x : String => digest.digest(x.getBytes()).map(0xFF & _).map { "%02x".format(_) }.foldLeft(""){_ + _}}
@@ -39,13 +38,11 @@ object AccessibilityTester {
 
   def endScenario(): Unit = {
     scenario.write(AccessibilityReport.makeScenarioSummary(scenarioResults))
-    hasRun = false
   }
 
   def checkContent(driver : WebDriver, filter : AccessibilityResult => Boolean = AccessibilityFilters.emptyFilter) : Unit = {
     try {
       val executor = driver.asInstanceOf[WebDriver with JavascriptExecutor]
-      hasRun = true
       val hash = hashcodeOf(executor.getPageSource)
 
       val data = cache.getOrElse(hash, {
