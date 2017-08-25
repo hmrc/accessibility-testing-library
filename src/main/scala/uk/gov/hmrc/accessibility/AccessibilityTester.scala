@@ -48,7 +48,7 @@ object AccessibilityTester {
       val hash = hashcodeOf(executor.getPageSource)
 
       val data = cache.getOrElse(hash, {
-        val results = runCodeSniffer(executor).filter(filter)
+        val results = new CodeSniffer(executor).run().filter(filter)
         cache = cache + (hash -> results)
         results
       })
@@ -65,25 +65,6 @@ object AccessibilityTester {
            | testing will not return results.
            |""".stripMargin)
     }
-  }
-
-  private def runCodeSniffer(driver : WebDriver with JavascriptExecutor) : Seq[AccessibilityResult] = {
-    // Clear the unrelated logs
-    driver.manage().logs().get("browser")
-    driver.executeScript(Source.fromInputStream(getClass.getResourceAsStream("/HtmlCodeSniffer.js")).getLines().mkString("\n"))
-    driver.executeScript("window.HTMLCS_RUNNER.run('WCAG2AA');")
-    val regex = """^.*?"\[HTMLCS\]\s*(.*)\|(.*)\|(.*)\|(.*)\|(.*)\|(.*)"""".r
-    val logs = driver.manage().logs().get("browser").filter(Level.ALL)
-    logs.asScala
-      .map(_.getMessage)
-      .map(_.replace("\\u003C","&#x003C;").replace("\\\"","\"")) // Undoing in HtmlCodeSniffer
-      .flatMap {
-      case regex(level, standard, element, identifier, description, context) =>
-        Some(AccessibilityResult(level, standard, element, identifier, description, context))
-      case _ => None
-    }
-      .filter(_.level != "NOTICE")
-      .sortBy(_.level)
   }
 
 }
