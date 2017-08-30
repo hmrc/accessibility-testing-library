@@ -117,10 +117,10 @@ class AccessibilityTesterSpec extends WordSpec with Matchers with MockitoSugar {
       val tester = new AccessibilityTester(emptyPageDriver, _ => codeSniffer)
 
       "start with an empty cache" in {
-        tester.cache shouldEqual Map.empty
+        tester.scenarioResults shouldEqual Seq.empty
       }
 
-      "have an empty cache when starting a new scenario" in {
+      "have an empty results when starting a new scenario" in {
         tester.startScenario(scenario)
         tester.cache shouldEqual Map.empty
       }
@@ -128,31 +128,22 @@ class AccessibilityTesterSpec extends WordSpec with Matchers with MockitoSugar {
       "have a cache with one item with no results" in {
         tester.checkContent()
         tester.cache.size shouldBe 1
-        val results = tester.cache.get("d41d8cd98f00b204e9800998ecf8427e")
-        results.size shouldBe 0
+        tester.cache should contain("da39a3ee5e6b4b0d3255bfef95601890afd80709" -> Seq.empty[AccessibilityResult])
       }
 
       "write no results to the scenario" in {
         verify(scenario, times(0)).write(any())
       }
+
+      "have an empty results when ending a scenario" in {
+        tester.endScenario()
+        tester.scenarioResults shouldEqual Seq.empty
+      }
+
+      "maintain cache entries between scenarios" in {
+        tester.cache.size shouldBe 1
+        tester.cache should contain("da39a3ee5e6b4b0d3255bfef95601890afd80709" -> Seq.empty[AccessibilityResult])
+      }
     }
   }
-
-//  "checking content of page" should {
-//    "give an empty summary for an empty page" in {
-////      AccessibilityTester.initialise()
-//
-//      val scenario = mock[Scenario]
-//
-//      scenario.write("hello")
-//      scenario.write("world")
-//
-//      val ord = Mockito.inOrder(scenario)
-//
-//      verify(scenario, times(2)).write(any())
-//      ord.verify(scenario).write("hello")
-//      ord.verify(scenario).write("world")
-//    }
-//  }
-
 }
