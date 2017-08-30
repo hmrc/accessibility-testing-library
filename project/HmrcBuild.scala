@@ -37,6 +37,19 @@ object HmrcBuild extends Build {
         "hmrc-releases" at hmrcRepoHost + "/content/repositories/hmrc-releases",
         "hmrc-releases-bintray" at "https://hmrc.bintray.com/releases/")
     )
+    .settings(scoverageSettings)
+
+  lazy val scoverageSettings = {
+    import scoverage._
+    import scoverage.ScoverageSbtPlugin._
+    Seq(
+      // Semicolon-separated list of regexs matching classes to exclude
+      ScoverageKeys.coverageExcludedPackages := ".*BuildInfo",
+      ScoverageKeys.coverageMinimum := 80,
+      ScoverageKeys.coverageFailOnMinimum := false,
+      ScoverageKeys.coverageHighlighting := true
+    )
+  }
 }
 
 private object AppDependencies {
