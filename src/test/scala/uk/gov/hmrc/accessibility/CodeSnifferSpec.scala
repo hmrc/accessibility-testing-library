@@ -31,6 +31,7 @@ import scala.collection.JavaConverters._
 class CodeSnifferSpec extends WordSpec with Matchers with MockitoSugar {
 
   val logEntries = Seq(
+    """console-api 999:9999 "An unrelated log message"""",
     """console-api 000:1111 "[HTMLCS] NOTICE|WCAG2AA.PrincipleX.GuidelineY_Z.0_0_0.H1,H2|a||Helpful desc|\u003Ca href=\"ref\">...</a>"""",
     """console-api 222:3333 "[HTMLCS] NOTICE|WCAG2AA.PrincipleX.GuidelineY_Z.0_0_0.H1,H2|a|id|Helpful desc|\u003Ca href=\"ref\">...</a>"""",
     """console-api 444:5555 "[HTMLCS] WARNING|WCAG2AA.PrincipleX.GuidelineY_Z.0_0_0.H1,H2|a||Helpful desc|\u003Ca href=\"ref\">...</a>"""",

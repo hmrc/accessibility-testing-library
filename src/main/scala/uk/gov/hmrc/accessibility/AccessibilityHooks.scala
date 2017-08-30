@@ -21,13 +21,15 @@ import cucumber.api.java.{After, Before}
 import cucumber.api.scala.{EN, ScalaDsl}
 
 class AccessibilityHooks extends ScalaDsl with EN {
+  protected val tester = AccessibilityTester
+
   @Before
   def startScenario(scenario : Scenario): Unit = {
-    AccessibilityTester.startScenario(scenario)
+    tester.startScenario(scenario)
   }
 
   @After
   def endScenario(): Unit = {
-    AccessibilityTester.endScenario()
+    tester.endScenario()
   }
 }
