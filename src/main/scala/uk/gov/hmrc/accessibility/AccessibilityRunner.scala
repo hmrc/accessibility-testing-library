@@ -17,19 +17,8 @@
 package uk.gov.hmrc.accessibility
 
 import cucumber.api.Scenario
-import cucumber.api.java.{After, Before}
-import cucumber.api.scala.{EN, ScalaDsl}
 
-class AccessibilityHooks extends ScalaDsl with EN {
-  protected val tester: AccessibilityRunner = AccessibilityTester
-
-  @Before
-  def startScenario(scenario : Scenario): Unit = {
-    tester.startScenario(scenario)
-  }
-
-  @After
-  def endScenario(): Unit = {
-    tester.endScenario()
-  }
+trait AccessibilityRunner {
+  def startScenario(scenario : Scenario) : Unit
+  def endScenario() : Unit
 }

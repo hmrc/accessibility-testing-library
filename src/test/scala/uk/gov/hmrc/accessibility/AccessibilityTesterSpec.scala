@@ -66,11 +66,22 @@ class AccessibilityTesterSpec extends WordSpec with Matchers with MockitoSugar {
     override def getPageSource: String = {
       ""
     }
+    override def getTitle: String = "Empty page"
+    override def getCurrentUrl: String = "emptypage.com"
+  }
+
+  class NonEmptyPageDriver extends EmptyPageDriver {
+    override def getPageSource: String = {
+      "A non-empty page"
+    }
+    override def getTitle: String = "Non-empty page"
+    override def getCurrentUrl: String = "nonemptypage.com"
   }
 
   val insufficientDriver = new InsufficientDriver
   val sufficientDriver = new SufficientDriver
   val emptyPageDriver = new EmptyPageDriver
+  val nonEmptyPageDriver = new NonEmptyPageDriver
 
   "the companion object" can {
 
@@ -113,11 +124,23 @@ class AccessibilityTesterSpec extends WordSpec with Matchers with MockitoSugar {
       val scenario = mock[Scenario]
       val codeSniffer = mock[CodeSniffer]
       when(codeSniffer.run()).thenReturn(Seq())
+      val driver = spy(emptyPageDriver)
 
-      val tester = new AccessibilityTester(emptyPageDriver, _ => codeSniffer)
+      val tester = new AccessibilityTester(driver, _ => codeSniffer)
 
       "start with an empty cache" in {
         tester.scenarioResults shouldEqual Seq.empty
+      }
+
+      "not write results if end scenario is called before start scenario" in {
+        tester.endScenario()
+        verify(scenario, times(0)).write(any())
+      }
+
+      "not perform checking if check content is called before start scenario" in {
+        tester.checkContent()
+        verify(codeSniffer, times(0)).run()
+        verify(scenario, times(0)).write(any())
       }
 
       "have an empty results when starting a new scenario" in {
@@ -125,10 +148,15 @@ class AccessibilityTesterSpec extends WordSpec with Matchers with MockitoSugar {
         tester.cache shouldEqual Map.empty
       }
 
-      "have a cache with one item with no results" in {
+      "have a cache with one item with no results after calling checkContent" in {
         tester.checkContent()
         tester.cache.size shouldBe 1
         tester.cache should contain("da39a3ee5e6b4b0d3255bfef95601890afd80709" -> Seq.empty[AccessibilityResult])
+      }
+
+      "call the underlying code sniffer and driver once when cache was empty" in {
+        verify(codeSniffer, times(1)).run()
+        verify(driver, times(1)).getPageSource
       }
 
       "write no results to the scenario" in {
@@ -143,6 +171,78 @@ class AccessibilityTesterSpec extends WordSpec with Matchers with MockitoSugar {
       "maintain cache entries between scenarios" in {
         tester.cache.size shouldBe 1
         tester.cache should contain("da39a3ee5e6b4b0d3255bfef95601890afd80709" -> Seq.empty[AccessibilityResult])
+      }
+
+      "reuse entries in the cache if possible and not call code sniffer again" in {
+        tester.startScenario(scenario)
+        tester.checkContent()
+        tester.endScenario()
+        tester.cache.size shouldBe 1
+        tester.cache should contain("da39a3ee5e6b4b0d3255bfef95601890afd80709" -> Seq.empty[AccessibilityResult])
+        verify(codeSniffer, times(1)).run()
+        verify(driver, times(2)).getPageSource
+      }
+    }
+
+    "provide feedback for a non-empty page" should {
+      val scenario = mock[Scenario]
+      val codeSniffer = mock[CodeSniffer]
+      val emptyDriver = spy(nonEmptyPageDriver)
+      val driver = spy(nonEmptyPageDriver)
+      val warnings = Seq(
+        AccessibilityResult("WARNING", "WCAG 2.0", "<a>", "thing", "A description", "<a id='thing'>...</a>")
+      )
+      val errors = Seq(
+        AccessibilityResult("ERROR", "WCAG 2.0", "<a>", "thing", "A description", "<a id='thing'>...</a>"),
+        AccessibilityResult("ERROR", "WCAG 2.0", "<a>", "thing", "A description", "<a id='thing'>...</a>")
+      )
+      when(codeSniffer.run()).thenReturn(warnings ++ errors)
+      val tester = new AccessibilityTester(driver, _ => codeSniffer)
+      val emptyPageTester = new AccessibilityTester(emptyDriver, _ => codeSniffer)
+
+      "start with an empty cache" in {
+        tester.startScenario(scenario)
+        tester.scenarioResults shouldEqual Seq.empty
+      }
+
+      "have a cache with one item with warnings and errors after calling checkContent" in {
+        tester.checkContent()
+        tester.cache.size shouldBe 1
+        tester.cache should contain("5248762bf513ea3041c2e51669fbb191ece04c49" -> (warnings ++ errors))
+      }
+
+      "have the correct accumulated results after calling checkContent" in {
+        tester.scenarioResults shouldBe warnings ++ errors
+      }
+
+      "call the underlying code sniffer and driver once when cache was empty" in {
+        verify(codeSniffer, times(1)).run()
+        verify(driver, times(1)).getPageSource
+      }
+
+      "write a single summary to the scenario" in {
+        verify(scenario, times(1)).write(any())
+        verify(scenario, times(1)).write(contains("Found 3 issues on Non-empty page (nonemptypage.com)"))
+      }
+
+      "write a summary for the scenario upon completion" in {
+        tester.endScenario()
+        verify(scenario, times(1)).write(contains("There were 2 errors and 1 warnings"))
+      }
+
+      "maintain cache entries between scenarios" in {
+        tester.cache.size shouldBe 1
+        tester.cache should contain("5248762bf513ea3041c2e51669fbb191ece04c49" -> (warnings ++ errors))
+      }
+
+      "reuse entries in the cache if possible and not call code sniffer again" in {
+        tester.startScenario(scenario)
+        tester.checkContent()
+        tester.endScenario()
+        tester.cache.size shouldBe 1
+        tester.cache should contain("5248762bf513ea3041c2e51669fbb191ece04c49" -> (warnings ++ errors))
+        verify(codeSniffer, times(1)).run()
+        verify(driver, times(2)).getPageSource
       }
     }
   }

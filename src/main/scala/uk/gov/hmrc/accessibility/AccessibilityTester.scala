@@ -21,7 +21,7 @@ import java.util.logging.Logger
 import cucumber.api.Scenario
 import org.openqa.selenium.{JavascriptExecutor, WebDriver}
 
-object AccessibilityTester {
+object AccessibilityTester extends AccessibilityRunner {
   val logger = Logger.getLogger(AccessibilityTester.getClass.getName)
   var tester: AccessibilityTester = _
   private var compatibleDriver = false
@@ -37,10 +37,8 @@ object AccessibilityTester {
     } catch {
       case ex: ClassCastException => {
         logger.warning(
-          s"""
-             |Current driver class '${driver.getClass.getName}' cannot be cast to JavascriptExecutor so accessibility
-             | testing will not return results.
-             |""".stripMargin)
+          s"""Current driver class '${driver.getClass.getName}' cannot be cast to JavascriptExecutor so accessibility
+             | testing will not return results.""".stripMargin)
       }
     }
     compatibleDriver
@@ -62,31 +60,47 @@ object AccessibilityTester {
 class AccessibilityTester(driver: WebDriver with JavascriptExecutor,
                           codeSnifferConstructor: (WebDriver with JavascriptExecutor => CodeSniffer) = new CodeSniffer(_)) {
   private lazy val digest = MessageDigest.getInstance("SHA1")
+  val logger = Logger.getLogger(AccessibilityTester.getClass.getName)
   val sniffer: CodeSniffer = codeSnifferConstructor(driver)
-  var scenario: Scenario = _
+  var currentScenario: Option[Scenario] = None
   var scenarioResults: Seq[AccessibilityResult] = Seq.empty
   var cache: Map[String, Seq[AccessibilityResult]] = Map.empty
 
   def startScenario(scenario: Scenario): Unit = {
-    this.scenario = scenario
+    currentScenario = Some(scenario)
     scenarioResults = Seq.empty
   }
 
   def endScenario(): Unit = {
-    scenario.write(AccessibilityReport.makeScenarioSummary(scenarioResults))
-    scenarioResults = Seq.empty
+    currentScenario match {
+      case Some(s) => {
+        s.write(AccessibilityReport.makeScenarioSummary(scenarioResults))
+        scenarioResults = Seq.empty
+        currentScenario = None
+      }
+      case None => {
+        logger.severe("endScenario has been called without startScenario so behaviour is undefined.")
+      }
+    }
   }
 
   def checkContent(filter: AccessibilityResult => Boolean = AccessibilityFilters.emptyFilter): Unit = {
-    val hash = hashcodeOf(driver.getPageSource)
-    val data = cache.getOrElse(hash, {
-      val results = sniffer.run()
-      cache = cache + (hash -> results)
-      results
-    }).filter(filter)
-    if (data.nonEmpty) {
-      scenarioResults ++= data
-      scenario.write(s"<h3>Found ${data.size} issues on ${driver.getTitle} (${driver.getCurrentUrl})</h3>\n${AccessibilityReport.makeTable(data)}")
+    currentScenario match {
+      case Some(s) => {
+        val hash = hashcodeOf(driver.getPageSource)
+        val data = cache.getOrElse(hash, {
+          val results = sniffer.run()
+          cache = cache + (hash -> results)
+          results
+        }).filter(filter)
+        if (data.nonEmpty) {
+          scenarioResults ++= data
+          s.write(s"<h3>Found ${data.size} issues on ${driver.getTitle} (${driver.getCurrentUrl})</h3>\n${AccessibilityReport.makeTable(data)}")
+        }
+      }
+      case None => {
+        logger.severe("checkContent has been called without startScenario so no checking will be done.")
+      }
     }
   }
 
