@@ -16,18 +16,10 @@
 
 package uk.gov.hmrc.accessibility
 
-import java.util.logging.Level
-
 import cucumber.api.Scenario
-import org.mockito.Answers
-import org.mockito.Matchers._
-import org.mockito.Mockito.{withSettings, _}
-import org.openqa.selenium.logging.{LogEntries, LogEntry}
-import org.openqa.selenium.{JavascriptExecutor, WebDriver}
+import org.mockito.Mockito._
 import org.scalatest.mock.MockitoSugar
 import org.scalatest.{Matchers, WordSpec}
-
-import scala.collection.JavaConverters._
 
 class AccessibilityHooksSpec extends WordSpec with Matchers with MockitoSugar {
 
