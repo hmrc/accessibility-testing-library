@@ -16,6 +16,8 @@
 
 package uk.gov.hmrc.accessibility.validation.html
 
+import org.mockito.Matchers._
+import org.mockito.Mockito._
 import org.scalatest.mock.MockitoSugar
 import org.scalatest.{Matchers, WordSpec}
 
@@ -106,4 +108,40 @@ class HtmlValidatorSpec extends WordSpec with Matchers with MockitoSugar {
       )
     }
   }
+
+  "validate" should {
+
+    val json = """{
+                 |  "messages": [
+                 |    {
+                 |      "type": "error",
+                 |      "lastLine": 1,
+                 |      "lastColumn": 2,
+                 |      "firstColumn": 3,
+                 |      "message": "message1",
+                 |      "extract": "extract1",
+                 |      "hiliteStart": 4,
+                 |      "hiliteLength": 5
+                 |    }
+                 |  ]
+                 |}""".stripMargin
+
+    "Call the runner and produce errors when present" in {
+      val runner = mock[ValidationRunner]
+      when(runner.run(any())).thenReturn(json)
+      val validator = new HtmlValidator(runner)
+      val result = validator.validate("")
+      result shouldBe Seq(HtmlError(1, 3, 2, "message1", "extract1"))
+    }
+
+    "Call the runner and produce no errors when none present" in {
+      val runner = mock[ValidationRunner]
+      when(runner.run(any())).thenReturn("")
+      val validator = new HtmlValidator(runner)
+      val result = validator.validate("")
+      result shouldBe Seq()
+    }
+
+  }
+
 }
