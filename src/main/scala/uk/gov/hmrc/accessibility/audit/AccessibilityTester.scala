@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.accessibility
+package uk.gov.hmrc.accessibility.audit
 
 import java.security.MessageDigest
 import java.util.logging.Logger
+
 import cucumber.api.Scenario
 import org.openqa.selenium.{JavascriptExecutor, WebDriver}
 

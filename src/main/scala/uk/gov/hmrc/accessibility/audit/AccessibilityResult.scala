@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.accessibility
+package uk.gov.hmrc.accessibility.audit
 
 case class AccessibilityResult(level: String,
                                standard: String,

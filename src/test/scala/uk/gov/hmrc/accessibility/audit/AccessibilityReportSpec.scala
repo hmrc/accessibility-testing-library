@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.accessibility
+package uk.gov.hmrc.accessibility.audit
 
-import org.scalatest.mock.MockitoSugar
-import org.scalatest.{Matchers, WordSpec}
-import uk.gov.hmrc.accessibility.AccessibilityReport._
-import org.scalatest.prop.TableDrivenPropertyChecks._
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
+import org.scalatest.mock.MockitoSugar
+import org.scalatest.prop.TableDrivenPropertyChecks._
+import org.scalatest.{Matchers, WordSpec}
+import uk.gov.hmrc.accessibility.audit.AccessibilityReport._
 
 class AccessibilityReportSpec extends WordSpec with Matchers with MockitoSugar {
 

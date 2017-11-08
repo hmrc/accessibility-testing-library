@@ -14,22 +14,17 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.accessibility
+package uk.gov.hmrc.accessibility.audit
 
 import java.util
 
 import cucumber.api.Scenario
-import org.jsoup.Jsoup
-import org.jsoup.nodes.Document
+import org.mockito.Matchers._
+import org.mockito.Mockito._
+import org.openqa.selenium.WebDriver.{Navigation, Options, TargetLocator}
 import org.openqa.selenium.{By, JavascriptExecutor, WebDriver, WebElement}
 import org.scalatest.mock.MockitoSugar
-import org.mockito.Mockito._
-import org.mockito.Matchers._
-import org.mockito.{ArgumentCaptor, Mockito}
-import org.openqa.selenium.WebDriver.{Navigation, Options, TargetLocator}
-import org.scalatest.prop.TableDrivenPropertyChecks._
 import org.scalatest.{Matchers, WordSpec}
-import uk.gov.hmrc.accessibility.AccessibilityReport._
 
 class AccessibilityTesterSpec extends WordSpec with Matchers with MockitoSugar {
 

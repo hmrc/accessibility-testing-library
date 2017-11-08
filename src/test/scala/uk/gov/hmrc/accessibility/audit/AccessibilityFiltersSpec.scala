@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.accessibility
+package uk.gov.hmrc.accessibility.audit
 
 import org.scalatest.mock.MockitoSugar
 import org.scalatest.{Matchers, WordSpec}
-import uk.gov.hmrc.accessibility.AccessibilityFilters._
+import uk.gov.hmrc.accessibility.audit.AccessibilityFilters._
 
 class AccessibilityFiltersSpec extends WordSpec with Matchers with MockitoSugar {
 
