@@ -25,6 +25,8 @@ class ProcessValidationRunner extends ValidationRunner {
 
   override def run(source: String): String = {
     val reader = new ByteArrayInputStream(source.getBytes("UTF-8"))
-    (Commands #< reader).!!
+    var lines = Seq[String]()
+    (Commands #< reader).!!(ProcessLogger(line => {lines = lines :+ line}))
+    lines.mkString("\n")
   }
 }

@@ -142,6 +142,12 @@ class HtmlValidatorSpec extends WordSpec with Matchers with MockitoSugar {
       result shouldBe Seq()
     }
 
+    "Invoke the external dependency and return results from it" in {
+      val validator = new HtmlValidator()
+      val result = validator.validate("<html></html>")
+      result shouldBe Seq(HtmlError(1,1,6,"Start tag seen without seeing a doctype first. Expected “<!DOCTYPE html>”.","<html></html"), HtmlError(1,7,13,"Element “head” is missing a required instance of child element “title”.","<html></html>"))
+    }
+
   }
 
 }
