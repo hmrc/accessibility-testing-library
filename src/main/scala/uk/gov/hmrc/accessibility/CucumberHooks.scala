@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.accessibility.audit
+package uk.gov.hmrc.accessibility
 
 import cucumber.api.Scenario
 
-trait AuditRunner {
+trait CucumberHooks {
   def startScenario(scenario : Scenario) : Unit
   def endScenario() : Unit
 }

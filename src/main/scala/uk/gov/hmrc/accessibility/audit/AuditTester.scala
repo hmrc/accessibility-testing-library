@@ -21,8 +21,9 @@ import java.util.logging.Logger
 
 import cucumber.api.Scenario
 import org.openqa.selenium.{JavascriptExecutor, WebDriver}
+import uk.gov.hmrc.accessibility.CucumberHooks
 
-object AuditTester extends AuditRunner {
+object AuditTester extends CucumberHooks {
   val logger = Logger.getLogger(AuditTester.getClass.getName)
   var tester: AuditTester = _
   private var compatibleDriver = false
