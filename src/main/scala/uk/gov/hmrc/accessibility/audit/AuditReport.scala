@@ -16,8 +16,8 @@
 
 package uk.gov.hmrc.accessibility.audit
 
-object AccessibilityReport {
-  def makeTable(data : Seq[AccessibilityResult]) : String = {
+object AuditReport {
+  def makeTable(data : Seq[AuditResult]) : String = {
     var output = new StringBuilder("""
                                      | <table style="margin-top: -4em">
                                      |   <thead>
@@ -48,7 +48,7 @@ object AccessibilityReport {
     output.toString()
   }
 
-  def makeScenarioSummary(scenarioResults : Seq[AccessibilityResult]) : String = {
+  def makeScenarioSummary(scenarioResults : Seq[AuditResult]) : String = {
     var output = new StringBuilder("""<h3>Summary</h3><p style="margin-top: -1em">There """)
     val grouped = scenarioResults.groupBy(_.level)
     (grouped.getOrElse("ERROR", Seq.empty).size, grouped.getOrElse("WARNING", Seq.empty).size) match {

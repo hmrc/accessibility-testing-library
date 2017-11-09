@@ -16,9 +16,9 @@
 
 package uk.gov.hmrc.accessibility.audit
 
-case class AccessibilityResult(level: String,
-                               standard: String,
-                               element: String,
-                               identifier: String,
-                               description: String,
-                               context: String)
+import cucumber.api.Scenario
+
+trait AuditRunner {
+  def startScenario(scenario : Scenario) : Unit
+  def endScenario() : Unit
+}

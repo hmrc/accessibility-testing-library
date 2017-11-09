@@ -41,10 +41,10 @@ class CodeSnifferSpec extends WordSpec with Matchers with MockitoSugar {
   ).map(x => new LogEntry(Level.INFO, 0, x))
 
   val results = Seq(
-    AccessibilityResult("ERROR", "WCAG2AA.PrincipleX.GuidelineY_Z.0_0_0.H1,H2", "a", "", "Helpful desc", "<a href=\"ref\">...</a>"),
-    AccessibilityResult("ERROR", "WCAG2AA.PrincipleX.GuidelineY_Z.0_0_0.H1,H2", "a", "id", "Helpful desc", "<a href=\"ref\">...</a>"),
-    AccessibilityResult("WARNING", "WCAG2AA.PrincipleX.GuidelineY_Z.0_0_0.H1,H2", "a", "", "Helpful desc", "<a href=\"ref\">...</a>"),
-    AccessibilityResult("WARNING", "WCAG2AA.PrincipleX.GuidelineY_Z.0_0_0.H1,H2", "a", "id", "Helpful desc", "<a href=\"ref\">...</a>")
+    AuditResult("ERROR", "WCAG2AA.PrincipleX.GuidelineY_Z.0_0_0.H1,H2", "a", "", "Helpful desc", "<a href=\"ref\">...</a>"),
+    AuditResult("ERROR", "WCAG2AA.PrincipleX.GuidelineY_Z.0_0_0.H1,H2", "a", "id", "Helpful desc", "<a href=\"ref\">...</a>"),
+    AuditResult("WARNING", "WCAG2AA.PrincipleX.GuidelineY_Z.0_0_0.H1,H2", "a", "", "Helpful desc", "<a href=\"ref\">...</a>"),
+    AuditResult("WARNING", "WCAG2AA.PrincipleX.GuidelineY_Z.0_0_0.H1,H2", "a", "id", "Helpful desc", "<a href=\"ref\">...</a>")
   )
 
   // Needed because Mockito doesn't seem to get along with subtyping multiple classes

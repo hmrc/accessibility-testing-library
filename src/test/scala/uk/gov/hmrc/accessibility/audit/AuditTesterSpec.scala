@@ -26,7 +26,7 @@ import org.openqa.selenium.{By, JavascriptExecutor, WebDriver, WebElement}
 import org.scalatest.mock.MockitoSugar
 import org.scalatest.{Matchers, WordSpec}
 
-class AccessibilityTesterSpec extends WordSpec with Matchers with MockitoSugar {
+class AuditTesterSpec extends WordSpec with Matchers with MockitoSugar {
 
   // Needed because Mockito doesn't seem to get along with subtyping multiple classes
   trait WebDriverWithJSExecutor extends WebDriver with JavascriptExecutor
@@ -146,7 +146,7 @@ class AccessibilityTesterSpec extends WordSpec with Matchers with MockitoSugar {
       "have a cache with one item with no results after calling checkContent" in {
         tester.checkContent()
         tester.cache.size shouldBe 1
-        tester.cache should contain("da39a3ee5e6b4b0d3255bfef95601890afd80709" -> Seq.empty[AccessibilityResult])
+        tester.cache should contain("da39a3ee5e6b4b0d3255bfef95601890afd80709" -> Seq.empty[AuditResult])
       }
 
       "call the underlying code sniffer and driver once when cache was empty" in {
@@ -165,7 +165,7 @@ class AccessibilityTesterSpec extends WordSpec with Matchers with MockitoSugar {
 
       "maintain cache entries between scenarios" in {
         tester.cache.size shouldBe 1
-        tester.cache should contain("da39a3ee5e6b4b0d3255bfef95601890afd80709" -> Seq.empty[AccessibilityResult])
+        tester.cache should contain("da39a3ee5e6b4b0d3255bfef95601890afd80709" -> Seq.empty[AuditResult])
       }
 
       "reuse entries in the cache if possible and not call code sniffer again" in {
@@ -173,7 +173,7 @@ class AccessibilityTesterSpec extends WordSpec with Matchers with MockitoSugar {
         tester.checkContent()
         tester.endScenario()
         tester.cache.size shouldBe 1
-        tester.cache should contain("da39a3ee5e6b4b0d3255bfef95601890afd80709" -> Seq.empty[AccessibilityResult])
+        tester.cache should contain("da39a3ee5e6b4b0d3255bfef95601890afd80709" -> Seq.empty[AuditResult])
         verify(codeSniffer, times(1)).run()
         verify(driver, times(2)).getPageSource
       }
@@ -185,11 +185,11 @@ class AccessibilityTesterSpec extends WordSpec with Matchers with MockitoSugar {
       val emptyDriver = spy(nonEmptyPageDriver)
       val driver = spy(nonEmptyPageDriver)
       val warnings = Seq(
-        AccessibilityResult("WARNING", "WCAG 2.0", "<a>", "thing", "A description", "<a id='thing'>...</a>")
+        AuditResult("WARNING", "WCAG 2.0", "<a>", "thing", "A description", "<a id='thing'>...</a>")
       )
       val errors = Seq(
-        AccessibilityResult("ERROR", "WCAG 2.0", "<a>", "thing", "A description", "<a id='thing'>...</a>"),
-        AccessibilityResult("ERROR", "WCAG 2.0", "<a>", "thing", "A description", "<a id='thing'>...</a>")
+        AuditResult("ERROR", "WCAG 2.0", "<a>", "thing", "A description", "<a id='thing'>...</a>"),
+        AuditResult("ERROR", "WCAG 2.0", "<a>", "thing", "A description", "<a id='thing'>...</a>")
       )
       when(codeSniffer.run()).thenReturn(warnings ++ errors)
       val tester = new AccessibilityTester(driver, _ => codeSniffer)

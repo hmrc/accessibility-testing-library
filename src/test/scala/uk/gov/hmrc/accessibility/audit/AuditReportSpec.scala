@@ -21,14 +21,14 @@ import org.jsoup.nodes.Document
 import org.scalatest.mock.MockitoSugar
 import org.scalatest.prop.TableDrivenPropertyChecks._
 import org.scalatest.{Matchers, WordSpec}
-import uk.gov.hmrc.accessibility.audit.AccessibilityReport._
+import uk.gov.hmrc.accessibility.audit.AuditReport._
 
-class AccessibilityReportSpec extends WordSpec with Matchers with MockitoSugar {
+class AuditReportSpec extends WordSpec with Matchers with MockitoSugar {
 
-  private val errorResult = AccessibilityResult("ERROR","standard","element","identifier","description", "context")
-  private val warningResult = AccessibilityResult("WARNING","standard","element","identifier","description", "context")
+  private val errorResult = AuditResult("ERROR","standard","element","identifier","description", "context")
+  private val warningResult = AuditResult("WARNING","standard","element","identifier","description", "context")
 
-  private def makeSeq(errors : Int, warnings : Int) : Seq[AccessibilityResult] = {
+  private def makeSeq(errors : Int, warnings : Int) : Seq[AuditResult] = {
     Seq.fill(errors)(errorResult) ++ Seq.fill(warnings)(warningResult)
   }
 

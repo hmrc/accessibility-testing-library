@@ -22,7 +22,7 @@ import java.util.logging.Logger
 import cucumber.api.Scenario
 import org.openqa.selenium.{JavascriptExecutor, WebDriver}
 
-object AccessibilityTester extends AccessibilityRunner {
+object AccessibilityTester extends AuditRunner {
   val logger = Logger.getLogger(AccessibilityTester.getClass.getName)
   var tester: AccessibilityTester = _
   private var compatibleDriver = false
@@ -64,8 +64,8 @@ class AccessibilityTester(driver: WebDriver with JavascriptExecutor,
   val logger = Logger.getLogger(AccessibilityTester.getClass.getName)
   val sniffer: CodeSniffer = codeSnifferConstructor(driver)
   var currentScenario: Option[Scenario] = None
-  var scenarioResults: Seq[AccessibilityResult] = Seq.empty
-  var cache: Map[String, Seq[AccessibilityResult]] = Map.empty
+  var scenarioResults: Seq[AuditResult] = Seq.empty
+  var cache: Map[String, Seq[AuditResult]] = Map.empty
 
   def startScenario(scenario: Scenario): Unit = {
     currentScenario = Some(scenario)
@@ -75,7 +75,7 @@ class AccessibilityTester(driver: WebDriver with JavascriptExecutor,
   def endScenario(): Unit = {
     currentScenario match {
       case Some(s) => {
-        s.write(AccessibilityReport.makeScenarioSummary(scenarioResults))
+        s.write(AuditReport.makeScenarioSummary(scenarioResults))
         scenarioResults = Seq.empty
         currentScenario = None
       }
@@ -85,7 +85,7 @@ class AccessibilityTester(driver: WebDriver with JavascriptExecutor,
     }
   }
 
-  def checkContent(filter: AccessibilityResult => Boolean = AccessibilityFilters.emptyFilter): Unit = {
+  def checkContent(filter: AuditResult => Boolean = AuditFilters.emptyFilter): Unit = {
     currentScenario match {
       case Some(s) => {
         val hash = hashcodeOf(driver.getPageSource)
@@ -96,7 +96,7 @@ class AccessibilityTester(driver: WebDriver with JavascriptExecutor,
         }).filter(filter)
         if (data.nonEmpty) {
           scenarioResults ++= data
-          s.write(s"<h3>Found ${data.size} issues on ${driver.getTitle} (${driver.getCurrentUrl})</h3>\n${AccessibilityReport.makeTable(data)}")
+          s.write(s"<h3>Found ${data.size} issues on ${driver.getTitle} (${driver.getCurrentUrl})</h3>\n${AuditReport.makeTable(data)}")
         }
       }
       case None => {

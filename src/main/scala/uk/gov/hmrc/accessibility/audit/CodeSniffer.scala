@@ -30,7 +30,7 @@ class CodeSniffer(driver: WebDriver with JavascriptExecutor) {
   private val CSCommand = "window.HTMLCS_RUNNER.run('WCAG2AA');"
   private val LogRegex = """^.*?"\[HTMLCS\]\s*(.*)\|(.*)\|(.*)\|(.*)\|(.*)\|(.*)"""".r
 
-  def run(): Seq[AccessibilityResult] = {
+  def run(): Seq[AuditResult] = {
     driver.manage().logs().get("browser") // Clear the unrelated logs
     driver.executeScript(JavaScript)
     driver.executeScript(CSCommand)
@@ -38,12 +38,12 @@ class CodeSniffer(driver: WebDriver with JavascriptExecutor) {
     processLogs(logs)
   }
 
-  def processLogs(logs: Seq[LogEntry]): Seq[AccessibilityResult] = {
+  def processLogs(logs: Seq[LogEntry]): Seq[AuditResult] = {
     logs.map(_.getMessage)
       .map(_.replace("\\u003C", "&#x003C;").replace("\\\"", "\"")) // Undoing escaping in HtmlCodeSniffer
       .flatMap {
       case LogRegex(level, standard, element, identifier, description, context) =>
-        Some(AccessibilityResult(level, standard, element, identifier, description, context))
+        Some(AuditResult(level, standard, element, identifier, description, context))
       case _ => None
     }
       .filter(_.level != "NOTICE")
