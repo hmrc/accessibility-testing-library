@@ -81,34 +81,14 @@ class AuditTesterSpec extends WordSpec with Matchers with MockitoSugar {
   "the companion object" can {
 
     "initialise with a compatible driver" should {
-      "return indicate initialise was unsuccessful" in {
-        AuditTester.initialise(sufficientDriver) shouldBe true
-      }
-
-      "not call the tester instance" in {
-        val tester = mock[AuditTester]
-        AuditTester.initialise(sufficientDriver, _ => tester)
-        AuditTester.startScenario(scenario)
-        AuditTester.endScenario()
-
-        verify(tester, times(1)).startScenario(any())
-        verify(tester, times(1)).endScenario()
+      "return indicate initialise was successful" in {
+        AuditTester.initialise(sufficientDriver) should not be empty
       }
     }
 
     "initialise with an incompatible driver" should {
       "return indicate initialise was unsuccessful" in {
-        AuditTester.initialise(insufficientDriver) shouldBe false
-      }
-
-      "not call the tester instance" in {
-        val tester = mock[AuditTester]
-        AuditTester.initialise(insufficientDriver, _ => tester)
-        AuditTester.startScenario(scenario)
-        AuditTester.endScenario()
-
-        verify(tester, times(0)).startScenario(any())
-        verify(tester, times(0)).endScenario()
+        AuditTester.initialise(insufficientDriver) shouldBe None
       }
     }
   }

@@ -23,44 +23,28 @@ import cucumber.api.Scenario
 import org.openqa.selenium.{JavascriptExecutor, WebDriver}
 import uk.gov.hmrc.accessibility.CucumberHooks
 
-object AuditTester extends CucumberHooks {
+object AuditTester {
   val logger = Logger.getLogger(AuditTester.getClass.getName)
-  var tester: AuditTester = _
-  private var compatibleDriver = false
 
-  def initialise(driver: WebDriver, testerConstructor: (WebDriver with JavascriptExecutor => AuditTester) = new AuditTester(_)): Boolean = {
-    compatibleDriver = false
+  def initialise(driver: WebDriver, testerConstructor: (WebDriver with JavascriptExecutor => AuditTester) = new AuditTester(_)): Option[AuditTester] = {
     try {
       driver.asInstanceOf[JavascriptExecutor] // Forces cast to the see if type actually matches
       val executor = driver.asInstanceOf[WebDriver with JavascriptExecutor]
-      tester = testerConstructor(executor)
-      compatibleDriver = true
       logger.info("Current driver class can execute JavaScript so accessibility is enabled.")
+      Some(testerConstructor(executor))
     } catch {
       case ex: ClassCastException => {
         logger.warning(
           s"""Current driver class '${driver.getClass.getName}' cannot be cast to JavascriptExecutor so accessibility
-             | testing will not return results.""".stripMargin)
+              | testing will not return results.""".stripMargin)
+        None
       }
-    }
-    compatibleDriver
-  }
-
-  def startScenario(scenario: Scenario): Unit = {
-    if (compatibleDriver) {
-      tester.startScenario(scenario)
-    }
-  }
-
-  def endScenario(): Unit = {
-    if (compatibleDriver) {
-      tester.endScenario()
     }
   }
 }
 
 class AuditTester(driver: WebDriver with JavascriptExecutor,
-                  codeSnifferConstructor: (WebDriver with JavascriptExecutor => CodeSniffer) = new CodeSniffer(_)) {
+                  codeSnifferConstructor: (WebDriver with JavascriptExecutor => CodeSniffer) = new CodeSniffer(_)) extends CucumberHooks{
   private lazy val digest = MessageDigest.getInstance("SHA1")
   val logger = Logger.getLogger(AuditTester.getClass.getName)
   val sniffer: CodeSniffer = codeSnifferConstructor(driver)
