@@ -82,14 +82,14 @@ class AuditTesterSpec extends WordSpec with Matchers with MockitoSugar {
 
     "initialise with a compatible driver" should {
       "return indicate initialise was unsuccessful" in {
-        AccessibilityTester.initialise(sufficientDriver) shouldBe true
+        AuditTester.initialise(sufficientDriver) shouldBe true
       }
 
       "not call the tester instance" in {
-        val tester = mock[AccessibilityTester]
-        AccessibilityTester.initialise(sufficientDriver, _ => tester)
-        AccessibilityTester.startScenario(scenario)
-        AccessibilityTester.endScenario()
+        val tester = mock[AuditTester]
+        AuditTester.initialise(sufficientDriver, _ => tester)
+        AuditTester.startScenario(scenario)
+        AuditTester.endScenario()
 
         verify(tester, times(1)).startScenario(any())
         verify(tester, times(1)).endScenario()
@@ -98,14 +98,14 @@ class AuditTesterSpec extends WordSpec with Matchers with MockitoSugar {
 
     "initialise with an incompatible driver" should {
       "return indicate initialise was unsuccessful" in {
-        AccessibilityTester.initialise(insufficientDriver) shouldBe false
+        AuditTester.initialise(insufficientDriver) shouldBe false
       }
 
       "not call the tester instance" in {
-        val tester = mock[AccessibilityTester]
-        AccessibilityTester.initialise(insufficientDriver, _ => tester)
-        AccessibilityTester.startScenario(scenario)
-        AccessibilityTester.endScenario()
+        val tester = mock[AuditTester]
+        AuditTester.initialise(insufficientDriver, _ => tester)
+        AuditTester.startScenario(scenario)
+        AuditTester.endScenario()
 
         verify(tester, times(0)).startScenario(any())
         verify(tester, times(0)).endScenario()
@@ -121,7 +121,7 @@ class AuditTesterSpec extends WordSpec with Matchers with MockitoSugar {
       when(codeSniffer.run()).thenReturn(Seq())
       val driver = spy(emptyPageDriver)
 
-      val tester = new AccessibilityTester(driver, _ => codeSniffer)
+      val tester = new AuditTester(driver, _ => codeSniffer)
 
       "start with an empty cache" in {
         tester.scenarioResults shouldEqual Seq.empty
@@ -192,8 +192,8 @@ class AuditTesterSpec extends WordSpec with Matchers with MockitoSugar {
         AuditResult("ERROR", "WCAG 2.0", "<a>", "thing", "A description", "<a id='thing'>...</a>")
       )
       when(codeSniffer.run()).thenReturn(warnings ++ errors)
-      val tester = new AccessibilityTester(driver, _ => codeSniffer)
-      val emptyPageTester = new AccessibilityTester(emptyDriver, _ => codeSniffer)
+      val tester = new AuditTester(driver, _ => codeSniffer)
+      val emptyPageTester = new AuditTester(emptyDriver, _ => codeSniffer)
 
       "start with an empty cache" in {
         tester.startScenario(scenario)

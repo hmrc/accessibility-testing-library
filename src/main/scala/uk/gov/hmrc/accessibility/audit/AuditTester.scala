@@ -22,12 +22,12 @@ import java.util.logging.Logger
 import cucumber.api.Scenario
 import org.openqa.selenium.{JavascriptExecutor, WebDriver}
 
-object AccessibilityTester extends AuditRunner {
-  val logger = Logger.getLogger(AccessibilityTester.getClass.getName)
-  var tester: AccessibilityTester = _
+object AuditTester extends AuditRunner {
+  val logger = Logger.getLogger(AuditTester.getClass.getName)
+  var tester: AuditTester = _
   private var compatibleDriver = false
 
-  def initialise(driver: WebDriver, testerConstructor: (WebDriver with JavascriptExecutor => AccessibilityTester) = new AccessibilityTester(_)): Boolean = {
+  def initialise(driver: WebDriver, testerConstructor: (WebDriver with JavascriptExecutor => AuditTester) = new AuditTester(_)): Boolean = {
     compatibleDriver = false
     try {
       driver.asInstanceOf[JavascriptExecutor] // Forces cast to the see if type actually matches
@@ -58,10 +58,10 @@ object AccessibilityTester extends AuditRunner {
   }
 }
 
-class AccessibilityTester(driver: WebDriver with JavascriptExecutor,
-                          codeSnifferConstructor: (WebDriver with JavascriptExecutor => CodeSniffer) = new CodeSniffer(_)) {
+class AuditTester(driver: WebDriver with JavascriptExecutor,
+                  codeSnifferConstructor: (WebDriver with JavascriptExecutor => CodeSniffer) = new CodeSniffer(_)) {
   private lazy val digest = MessageDigest.getInstance("SHA1")
-  val logger = Logger.getLogger(AccessibilityTester.getClass.getName)
+  val logger = Logger.getLogger(AuditTester.getClass.getName)
   val sniffer: CodeSniffer = codeSnifferConstructor(driver)
   var currentScenario: Option[Scenario] = None
   var scenarioResults: Seq[AuditResult] = Seq.empty
