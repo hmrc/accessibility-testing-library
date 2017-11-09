@@ -16,21 +16,20 @@
 
 package uk.gov.hmrc.accessibility.validation.html
 
-import play.api.libs.json.{JsPath, Reads}
-import play.api.libs.functional.syntax._
+import java.io.ByteArrayInputStream
 
-case class HtmlError(line: Int,
-                     startCol: Int,
-                     endCol: Int,
-                     message: String,
-                     extract: String)
+import uk.gov.hmrc.accessibility.validation.ValidationRunner
 
-object HtmlError {
-  implicit val htmlErrorReads: Reads[HtmlError] = (
-    (JsPath \ "lastLine").read[Int] and
-      (JsPath \ "firstColumn").read[Int] and
-      (JsPath \ "lastColumn").read[Int] and
-      (JsPath \ "message").read[String] and
-      (JsPath \ "extract").read[String]
-    ) (HtmlError.apply _)
+import scala.sys.process._
+
+class ProcessHtmlValidationRunner extends ValidationRunner {
+  private val Jar = getClass.getClassLoader.getResource("vnu.jar").getPath
+  private val Commands = Seq("java", "-jar", Jar, "--exit-zero-always", "--format", "json", "-")
+
+  override def run(source: String): String = {
+    val reader = new ByteArrayInputStream(source.getBytes("UTF-8"))
+    var lines = Seq[String]()
+    (Commands #< reader).!!(ProcessLogger(line => {lines = lines :+ line}))
+    lines.mkString("\n")
+  }
 }

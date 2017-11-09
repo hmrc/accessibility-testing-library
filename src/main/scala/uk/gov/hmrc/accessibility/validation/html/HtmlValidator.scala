@@ -19,22 +19,23 @@ package uk.gov.hmrc.accessibility.validation.html
 import com.fasterxml.jackson.core.JsonParseException
 import com.fasterxml.jackson.databind.JsonMappingException
 import play.api.libs.json._
+import uk.gov.hmrc.accessibility.validation.ValidationRunner
 
-class HtmlValidator(val runner: ValidationRunner = new ProcessValidationRunner) {
+class HtmlValidator(val runner: ValidationRunner = new ProcessHtmlValidationRunner) {
   private val Logger = java.util.logging.Logger.getLogger(getClass.getName)
 
-  def validate(source: String): Seq[HtmlError] = {
+  def validate(source: String): Seq[HtmlValidationError] = {
     val result = runner.run(source)
     convertJson(result)
   }
 
-  def convertJson(result: String): Seq[HtmlError] = {
+  def convertJson(result: String): Seq[HtmlValidationError] = {
     if (result == "") {
       Seq()
     } else {
       try {
         val wrapped = Json.parse(result)
-        (wrapped \ "messages").as[Seq[HtmlError]]
+        (wrapped \ "messages").as[Seq[HtmlValidationError]]
       } catch {
         case e @ (_ : JsonMappingException| _ : JsonParseException) => {
           Logger.warning(e.getMessage)

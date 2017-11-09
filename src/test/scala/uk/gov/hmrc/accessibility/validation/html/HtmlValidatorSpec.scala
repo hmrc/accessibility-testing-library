@@ -20,6 +20,7 @@ import org.mockito.Matchers._
 import org.mockito.Mockito._
 import org.scalatest.mock.MockitoSugar
 import org.scalatest.{Matchers, WordSpec}
+import uk.gov.hmrc.accessibility.validation.ValidationRunner
 
 class HtmlValidatorSpec extends WordSpec with Matchers with MockitoSugar {
 
@@ -51,7 +52,7 @@ class HtmlValidatorSpec extends WordSpec with Matchers with MockitoSugar {
                    |  ]
                    |}""".stripMargin
       val result = new HtmlValidator().convertJson(json)
-      result shouldBe Seq(HtmlError(1, 3, 2, "message1", "extract1"))
+      result shouldBe Seq(HtmlValidationError(1, 3, 2, "message1", "extract1"))
     }
 
     "Give a sequence of multiple values for multiple results" in {
@@ -101,10 +102,10 @@ class HtmlValidatorSpec extends WordSpec with Matchers with MockitoSugar {
                    |}""".stripMargin
       val result = new HtmlValidator().convertJson(json)
       result shouldBe Seq(
-        HtmlError(1, 3, 2, "message1", "extract1"),
-        HtmlError(6, 8, 7, "message2", "extract2"),
-        HtmlError(11, 13, 12, "message3", "extract3"),
-        HtmlError(16, 18, 17, "message4", "extract4")
+        HtmlValidationError(1, 3, 2, "message1", "extract1"),
+        HtmlValidationError(6, 8, 7, "message2", "extract2"),
+        HtmlValidationError(11, 13, 12, "message3", "extract3"),
+        HtmlValidationError(16, 18, 17, "message4", "extract4")
       )
     }
   }
@@ -131,7 +132,7 @@ class HtmlValidatorSpec extends WordSpec with Matchers with MockitoSugar {
       when(runner.run(any())).thenReturn(json)
       val validator = new HtmlValidator(runner)
       val result = validator.validate("")
-      result shouldBe Seq(HtmlError(1, 3, 2, "message1", "extract1"))
+      result shouldBe Seq(HtmlValidationError(1, 3, 2, "message1", "extract1"))
     }
 
     "Call the runner and produce no errors when none present" in {
@@ -145,7 +146,7 @@ class HtmlValidatorSpec extends WordSpec with Matchers with MockitoSugar {
     "Invoke the external dependency and return results from it" in {
       val validator = new HtmlValidator()
       val result = validator.validate("<html></html>")
-      result shouldBe Seq(HtmlError(1,1,6,"Start tag seen without seeing a doctype first. Expected “<!DOCTYPE html>”.","<html></html"), HtmlError(1,7,13,"Element “head” is missing a required instance of child element “title”.","<html></html>"))
+      result shouldBe Seq(HtmlValidationError(1,1,6,"Start tag seen without seeing a doctype first. Expected “<!DOCTYPE html>”.","<html></html"), HtmlValidationError(1,7,13,"Element “head” is missing a required instance of child element “title”.","<html></html>"))
     }
 
   }

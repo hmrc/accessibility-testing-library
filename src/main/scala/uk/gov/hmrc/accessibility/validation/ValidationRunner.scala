@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.accessibility.validation.html
+package uk.gov.hmrc.accessibility.validation
 
 trait ValidationRunner {
   def run(source: String): String
