@@ -18,7 +18,7 @@ package uk.gov.hmrc.accessibility
 
 import cucumber.api.Scenario
 
-trait CucumberHooks {
+trait CucumberIntegration {
   def startScenario(scenario : Scenario) : Unit
   def endScenario() : Unit
 }

@@ -21,7 +21,7 @@ import java.util.logging.Logger
 
 import cucumber.api.Scenario
 import org.openqa.selenium.{JavascriptExecutor, WebDriver}
-import uk.gov.hmrc.accessibility.CucumberHooks
+import uk.gov.hmrc.accessibility.CucumberIntegration
 
 object AuditTester {
   val logger = Logger.getLogger(AuditTester.getClass.getName)
@@ -44,7 +44,7 @@ object AuditTester {
 }
 
 class AuditTester(driver: WebDriver with JavascriptExecutor,
-                  codeSnifferConstructor: (WebDriver with JavascriptExecutor => CodeSniffer) = new CodeSniffer(_)) extends CucumberHooks{
+                  codeSnifferConstructor: (WebDriver with JavascriptExecutor => CodeSniffer) = new CodeSniffer(_)) extends CucumberIntegration{
   private lazy val digest = MessageDigest.getInstance("SHA1")
   val logger = Logger.getLogger(AuditTester.getClass.getName)
   val sniffer: CodeSniffer = codeSnifferConstructor(driver)
