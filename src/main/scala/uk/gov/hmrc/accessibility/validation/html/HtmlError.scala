@@ -19,7 +19,11 @@ package uk.gov.hmrc.accessibility.validation.html
 import play.api.libs.json.{JsPath, Reads}
 import play.api.libs.functional.syntax._
 
-case class HtmlError(line: Int, startCol: Int, endCol: Int, message: String, extract: String)
+case class HtmlError(line: Int,
+                     startCol: Int,
+                     endCol: Int,
+                     message: String,
+                     extract: String)
 
 object HtmlError {
   implicit val htmlErrorReads: Reads[HtmlError] = (
