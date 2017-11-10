@@ -21,7 +21,7 @@ trait AccessibilityReporter[T] {
   val TableHeaderEnd = """</tr></thead>"""
   val TableFooter = """</tbody></table>"""
   val ReportName: String = "Accessibility summary"
-  val SummaryHeader = s"""<h3>$ReportName</h3><p>"""
+  lazy val SummaryHeader = s"""<h3>$ReportName</h3><p>"""
   val SummaryFooter = "</p>"
 
   def makeTable(data: Seq[T]): String = {
