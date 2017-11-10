@@ -82,7 +82,7 @@ class AuditTesterSpec extends WordSpec with Matchers with MockitoSugar {
 
     "initialise with a compatible driver" should {
       "return indicate initialise was successful" in {
-        AuditTester.initialise(sufficientDriver) should not be empty
+        AuditTester.initialise(sufficientDriver) shouldBe defined
       }
     }
 
