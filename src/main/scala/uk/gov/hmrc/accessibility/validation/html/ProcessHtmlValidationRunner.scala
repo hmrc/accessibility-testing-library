@@ -16,15 +16,18 @@
 
 package uk.gov.hmrc.accessibility.validation.html
 
-import java.io.ByteArrayInputStream
+import java.io.{ByteArrayInputStream, File}
 
+import org.apache.commons.io.FileUtils
 import uk.gov.hmrc.accessibility.validation.ValidationRunner
 
 import scala.sys.process._
 
 class ProcessHtmlValidationRunner extends ValidationRunner {
-  private val Jar = getClass.getClassLoader.getResource("vnu.jar").getPath
-  private val Commands = Seq("java", "-jar", Jar, "--exit-zero-always", "--format", "json", "-")
+  private val Jar = getClass.getClassLoader.getResourceAsStream("vnu.jar")
+  FileUtils.copyInputStreamToFile(Jar, new File("vnu.jar"))
+
+  private val Commands = Seq("java", "-jar", "vnu.jar", "--exit-zero-always", "--format", "json", "-")
 
   override def run(source: String): String = {
     val reader = new ByteArrayInputStream(source.getBytes("UTF-8"))
