@@ -59,7 +59,7 @@ class HtmlValidationTester(driver: WebDriver, runner: ValidationRunner = new Pro
         val results: Seq[HtmlValidationError] = htmlValidator.validate(driver.getPageSource)
         if (results.nonEmpty) {
           scenarioResults ++= results
-          s.write(s"<h3>Found ${results.size} issues on ${driver.getTitle} (${driver.getCurrentUrl})</h3>\n${HtmlValidationReporter.makeTable(results)}")
+          s.write(s"""<h3>Found ${results.size} issues on "${driver.getTitle}" (${driver.getCurrentUrl})</h3>\n${HtmlValidationReporter.makeTable(results)}""")
         }
       }
       case None => {

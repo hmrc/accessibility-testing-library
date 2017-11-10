@@ -81,7 +81,7 @@ class AuditTester(driver: WebDriver with JavascriptExecutor,
         }).filter(filter)
         if (data.nonEmpty) {
           scenarioResults ++= data
-          s.write(s"<h3>Found ${data.size} issues on ${driver.getTitle} (${driver.getCurrentUrl})</h3>\n${AuditReporter.makeTable(data)}")
+          s.write(s"""<h3>Found ${data.size} issues on "${driver.getTitle}" (${driver.getCurrentUrl})</h3>\n${AuditReporter.makeTable(data)}""")
         }
       }
       case None => {

@@ -197,7 +197,7 @@ class AuditTesterSpec extends WordSpec with Matchers with MockitoSugar {
 
       "write a single summary to the scenario" in {
         verify(scenario, times(1)).write(any())
-        verify(scenario, times(1)).write(contains("Found 3 issues on Non-empty page (nonemptypage.com)"))
+        verify(scenario, times(1)).write(contains("Found 3 issues on \"Non-empty page\" (nonemptypage.com)"))
       }
 
       "write a summary for the scenario upon completion" in {
