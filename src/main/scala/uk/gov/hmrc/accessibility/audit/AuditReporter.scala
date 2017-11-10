@@ -16,9 +16,9 @@
 
 package uk.gov.hmrc.accessibility.audit
 
-import uk.gov.hmrc.accessibility.AccessibilityReport
+import uk.gov.hmrc.accessibility.AccessibilityReporter
 
-object AuditReport extends AccessibilityReport[AuditResult] {
+object AuditReporter extends AccessibilityReporter[AuditResult] {
 
   override def headingValues(): Seq[String] = Seq(
     "Level",

@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.accessibility
 
-trait AccessibilityReport[T] {
+trait AccessibilityReporter[T] {
   val TableHeaderStart = """<table style="margin-top: -4em"><thead><tr>"""
   val TableHeaderEnd = """</tr></thead>"""
   val TableFooter = """</tbody></table>"""

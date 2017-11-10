@@ -21,9 +21,9 @@ import org.jsoup.nodes.Document
 import org.scalatest.mock.MockitoSugar
 import org.scalatest.prop.TableDrivenPropertyChecks._
 import org.scalatest.{Matchers, WordSpec}
-import uk.gov.hmrc.accessibility.audit.AuditReport._
+import uk.gov.hmrc.accessibility.audit.AuditReporter._
 
-class AuditReportSpec extends WordSpec with Matchers with MockitoSugar {
+class AuditReporterSpec extends WordSpec with Matchers with MockitoSugar {
 
   private val errorResult = AuditResult("ERROR","standard","element","identifier","description", "context")
   private val warningResult = AuditResult("WARNING","standard","element","identifier","description", "context")

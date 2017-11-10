@@ -60,7 +60,7 @@ class AuditTester(driver: WebDriver with JavascriptExecutor,
   def endScenario(): Unit = {
     currentScenario match {
       case Some(s) => {
-        s.write(AuditReport.makeSummary(scenarioResults))
+        s.write(AuditReporter.makeSummary(scenarioResults))
         scenarioResults = Seq.empty
         currentScenario = None
       }
@@ -81,7 +81,7 @@ class AuditTester(driver: WebDriver with JavascriptExecutor,
         }).filter(filter)
         if (data.nonEmpty) {
           scenarioResults ++= data
-          s.write(s"<h3>Found ${data.size} issues on ${driver.getTitle} (${driver.getCurrentUrl})</h3>\n${AuditReport.makeTable(data)}")
+          s.write(s"<h3>Found ${data.size} issues on ${driver.getTitle} (${driver.getCurrentUrl})</h3>\n${AuditReporter.makeTable(data)}")
         }
       }
       case None => {
