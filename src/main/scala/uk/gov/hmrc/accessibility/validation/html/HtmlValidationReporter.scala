@@ -14,38 +14,29 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.accessibility.audit
+package uk.gov.hmrc.accessibility.validation.html
 
 import uk.gov.hmrc.accessibility.AccessibilityReporter
 
-object AuditReporter extends AccessibilityReporter[AuditResult] {
+object HtmlValidationReporter extends AccessibilityReporter[HtmlValidationError] {
 
-  override val ReportName: String = "Audit summary"
+  override val ReportName: String = "HTML validation summary"
 
   override def headingValues(): Seq[String] = Seq(
-    "Level",
-    "Standard",
-    "Element",
-    "Detail",
-    "Description",
-    "Context"
+    "Message",
+    "Extract",
+    "Location"
   )
 
-  override def rowValues(item: AuditResult): Seq[String] = {
+  override def rowValues(item: HtmlValidationError): Seq[String] = {
     Seq(
-      item.level,
-      item.standard,
-      item.element,
-      item.identifier,
-      item.description,
-      item.context
+      item.message,
+      item.extract.replace("\u003C", "&#x003C;"),
+      s"${item.line}:${item.startCol}-${item.endCol}"
     )
   }
 
-  override def summaryContent(data: Seq[AuditResult]): String = {
-    val grouped = data.groupBy(_.level)
-    s"There were ${grouped.getOrElse("ERROR", Seq.empty).size} error(s) " +
-      s"and ${grouped.getOrElse("WARNING", Seq.empty).size} warning(s)."
+  override def summaryContent(data: Seq[HtmlValidationError]): String = {
+    s"There were ${data.size} issue(s)."
   }
-
 }
