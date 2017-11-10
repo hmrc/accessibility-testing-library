@@ -34,18 +34,18 @@ class AuditReportSpec extends WordSpec with Matchers with MockitoSugar {
 
   val summaries = Table(
     ("errors", "warnings", "message"),
-    (0, 0, "There were no errors or warnings"),
-    (1, 0, "There was 1 error and no warnings"),
-    (0, 1, "There were no errors and 1 warning"),
-    (2, 0, "There were 2 errors and no warnings"),
-    (0, 2, "There were no errors and 2 warnings"),
-    (2, 2, "There were 2 errors and 2 warnings")
+    (0, 0, "There were 0 error(s) and 0 warning(s)"),
+    (1, 0, "There were 1 error(s) and 0 warning(s)"),
+    (0, 1, "There were 0 error(s) and 1 warning(s)"),
+    (2, 0, "There were 2 error(s) and 0 warning(s)"),
+    (0, 2, "There were 0 error(s) and 2 warning(s)"),
+    (2, 2, "There were 2 error(s) and 2 warning(s)")
   )
   
   "makeScenarioSummary" should {
     forAll(summaries) { (e, w, msg) =>
       s"give the message '$msg' when there are $e errors and $w warnings" in {
-        makeScenarioSummary(makeSeq(e,w)) should include(msg)
+        summaryContent(makeSeq(e,w)) should include(msg)
       }
     }
   }

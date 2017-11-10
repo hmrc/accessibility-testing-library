@@ -16,50 +16,36 @@
 
 package uk.gov.hmrc.accessibility.audit
 
-object AuditReport {
-  def makeTable(data : Seq[AuditResult]) : String = {
-    var output = new StringBuilder("""
-                                     | <table style="margin-top: -4em">
-                                     |   <thead>
-                                     |     <tr>
-                                     |       <th>Level</th>
-                                     |       <th>Standard</th>
-                                     |       <th>Element</th>
-                                     |       <th>Detail</th>
-                                     |       <th>Description</th>
-                                     |       <th>Context</th>
-                                     |     </tr>
-                                     |   </thead>
-                                     |   <tbody>
-                                     |""".stripMargin)
-    data.foreach(row => {
-      output ++= s"""
-                    |<tr>
-                    | <td>${row.level}</td>
-                    | <td>${row.standard}</td>
-                    | <td>${row.element}</td>
-                    | <td>${row.identifier}</td>
-                    | <td>${row.description}</td>
-                    | <td>${row.context}</td>
-                    |</tr>
-         """.stripMargin
-    })
-    output ++= "</tbody></table>"
-    output.toString()
+import uk.gov.hmrc.accessibility.AccessibilityReport
+
+object AuditReport extends AccessibilityReport[AuditResult] {
+
+  override def headingValues(): Seq[String] = Seq(
+    "Level",
+    "Standard",
+    "Element",
+    "Detail",
+    "Description",
+    "Context"
+  )
+
+  override def rowValues(item: AuditResult): Seq[String] = {
+    Seq(
+      item.level,
+      item.standard,
+      item.element,
+      item.identifier,
+      item.description,
+      item.context
+    )
   }
 
-  def makeScenarioSummary(scenarioResults : Seq[AuditResult]) : String = {
-    var output = new StringBuilder("""<h3>Summary</h3><p style="margin-top: -1em">There """)
-    val grouped = scenarioResults.groupBy(_.level)
-    (grouped.getOrElse("ERROR", Seq.empty).size, grouped.getOrElse("WARNING", Seq.empty).size) match {
-      case (0, 0) => output ++= "were no errors or warnings"
-      case (1, 0) => output ++= "was 1 error and no warnings"
-      case (0, 1) => output ++= "were no errors and 1 warning"
-      case (e, 0) => output ++= s"were $e errors and no warnings"
-      case (0, w) => output ++= s"were no errors and $w warnings"
-      case (e, w) => output ++= s"were $e errors and $w warnings"
-    }
-    output ++= "</p>"
-    output.toString()
+  override val ReportName: String = "Audit summary"
+
+  override def summaryContent(data: Seq[AuditResult]): String = {
+    val grouped = data.groupBy(_.level)
+    s"There were ${grouped.getOrElse("ERROR", Seq.empty).size} error(s) " +
+      s"and ${grouped.getOrElse("WARNING", Seq.empty).size} warning(s)."
   }
+
 }

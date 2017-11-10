@@ -60,7 +60,7 @@ class AuditTester(driver: WebDriver with JavascriptExecutor,
   def endScenario(): Unit = {
     currentScenario match {
       case Some(s) => {
-        s.write(AuditReport.makeScenarioSummary(scenarioResults))
+        s.write(AuditReport.makeSummary(scenarioResults))
         scenarioResults = Seq.empty
         currentScenario = None
       }

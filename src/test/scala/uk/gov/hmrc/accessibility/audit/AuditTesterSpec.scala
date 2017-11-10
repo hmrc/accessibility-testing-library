@@ -202,7 +202,7 @@ class AuditTesterSpec extends WordSpec with Matchers with MockitoSugar {
 
       "write a summary for the scenario upon completion" in {
         tester.endScenario()
-        verify(scenario, times(1)).write(contains("There were 2 errors and 1 warnings"))
+        verify(scenario, times(1)).write(contains("There were 2 error(s) and 1 warning(s)"))
       }
 
       "maintain cache entries between scenarios" in {
