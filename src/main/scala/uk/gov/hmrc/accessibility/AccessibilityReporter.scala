@@ -28,7 +28,11 @@ trait AccessibilityReporter[T] {
     var output = new StringBuilder(TableHeaderStart)
     output ++= headingValues().map(v => s"<th>$v</th>").mkString
     output ++= TableHeaderEnd
-    output ++= "<tr>" + data.map(v => s"<td>$v</td>").mkString + "</tr>"
+    data.map(r => {
+      output ++= "<tr>"
+      rowValues(r).foreach(v => output ++= s"<td>$v</td>")
+      output ++= "</tr>"
+    })
     output ++= TableFooter
     output.toString()
   }
