@@ -22,7 +22,7 @@ object HtmlValidationFilters extends ResultFilters[HtmlValidationError] {
 
   val headerIcon = """A “link” element with a “sizes” attribute must
                | have a “rel” attribute that contains the value
-               | “icon” or the value “apple-touch-icon”.""".stripMargin
+               | “icon” or the value “apple-touch-icon”.""".stripMargin.replace("\n", "")
 
   def headerFooterFilter : PartialFunction[HtmlValidationError, Boolean] = {
 
