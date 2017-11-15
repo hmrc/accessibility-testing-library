@@ -53,10 +53,11 @@ class HtmlValidationTester(driver: WebDriver, runner: ValidationRunner = new Pro
     }
   }
 
-  def checkContent(): Unit = {
+  def checkContent(filter: HtmlValidationError => Boolean = HtmlValidationFilters.emptyFilter): Unit = {
     currentScenario match {
       case Some(s) => {
         val results: Seq[HtmlValidationError] = htmlValidator.validate(driver.getPageSource)
+          .filter(filter)
         if (results.nonEmpty) {
           scenarioResults ++= results
           s.write(s"""<h3>Found ${results.size} issues on "${driver.getTitle}" (${driver.getCurrentUrl})</h3>\n${HtmlValidationReporter.makeTable(results)}""")
