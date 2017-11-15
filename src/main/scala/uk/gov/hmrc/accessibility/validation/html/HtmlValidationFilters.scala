@@ -20,11 +20,14 @@ import uk.gov.hmrc.accessibility.ResultFilters
 
 object HtmlValidationFilters extends ResultFilters[HtmlValidationError] {
 
+  val headerIcon = """A “link” element with a “sizes” attribute must
+               | have a “rel” attribute that contains the value
+               |“icon” or the value “apple-touch-icon”.""".stripMargin
+
   def headerFooterFilter : PartialFunction[HtmlValidationError, Boolean] = {
-    case HtmlValidationError(_, _, _,
-      """A “link” element with a “sizes” attribute must
-        | have a “rel” attribute that contains the value
-        | “icon” or the value “apple-touch-icon”.""", _) => false
+
+
+    case HtmlValidationError(_, _, _, `headerIcon`, _) => false
     case HtmlValidationError(_, _, _,
       """The “banner” role is unnecessary for element “header”.""", _) => false
     case HtmlValidationError(_, _, _,
