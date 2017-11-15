@@ -26,13 +26,13 @@ object HtmlValidationFilters extends ResultFilters[HtmlValidationError] {
         | have a “rel” attribute that contains the value
         | “icon” or the value “apple-touch-icon”.""", _) => false
     case HtmlValidationError(_, _, _,
-      """The “banner” role is unnecessary for element “header”.""", _) => true
+      """The “banner” role is unnecessary for element “header”.""", _) => false
     case HtmlValidationError(_, _, _,
-      """The “navigation” role is unnecessary for element “nav”.""", _) => true
+      """The “navigation” role is unnecessary for element “nav”.""", _) => false
     case HtmlValidationError(_, _, _,
-      """The “main” role is unnecessary for element “main”.""", _) => true
+      """The “main” role is unnecessary for element “main”.""", _) => false
     case HtmlValidationError(_, _, _,
-      """The “contentinfo” role is unnecessary for element “footer”.""", _) => true
+      """The “contentinfo” role is unnecessary for element “footer”.""", _) => false
   }
 
 }
