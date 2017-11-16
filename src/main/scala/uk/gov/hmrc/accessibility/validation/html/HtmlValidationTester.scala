@@ -24,12 +24,12 @@ import uk.gov.hmrc.accessibility.CucumberIntegration
 import uk.gov.hmrc.accessibility.validation.ValidationRunner
 
 object HtmlValidationTester {
-  def initialise(driver: WebDriver, runner: ValidationRunner = new ProcessHtmlValidationRunner): Option[HtmlValidationTester] = {
+  def initialise(driver: WebDriver, runner: ValidationRunner = new APIHtmlValidationRunner): Option[HtmlValidationTester] = {
     Some(new HtmlValidationTester(driver, runner))
   }
 }
 
-class HtmlValidationTester(driver: WebDriver, runner: ValidationRunner = new ProcessHtmlValidationRunner) extends CucumberIntegration {
+class HtmlValidationTester(driver: WebDriver, runner: ValidationRunner = new APIHtmlValidationRunner) extends CucumberIntegration {
   val logger = Logger.getLogger(HtmlValidationTester.getClass.getName)
   var currentScenario: Option[Scenario] = None
   var scenarioResults: Seq[HtmlValidationError] = Seq.empty
