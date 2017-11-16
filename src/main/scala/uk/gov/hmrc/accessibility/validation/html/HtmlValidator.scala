@@ -21,7 +21,7 @@ import com.fasterxml.jackson.databind.JsonMappingException
 import play.api.libs.json._
 import uk.gov.hmrc.accessibility.validation.ValidationRunner
 
-class HtmlValidator(val runner: ValidationRunner = new ProcessHtmlValidationRunner) {
+class HtmlValidator(val runner: ValidationRunner = new APIHtmlValidationRunner) {
   private val Logger = java.util.logging.Logger.getLogger(getClass.getName)
 
   def validate(source: String): Seq[HtmlValidationError] = {
