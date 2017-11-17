@@ -103,7 +103,7 @@ class AuditTesterSpec extends WordSpec with Matchers with MockitoSugar {
 
       val tester = new AuditTester(driver, _ => codeSniffer)
 
-      "start with an empty cache" in {
+      "start with empty results" in {
         tester.scenarioResults shouldEqual Seq.empty
       }
 
@@ -118,23 +118,23 @@ class AuditTesterSpec extends WordSpec with Matchers with MockitoSugar {
         verify(scenario, times(0)).write(any())
       }
 
-      "have an empty results when starting a new scenario" in {
+      "have empty results when starting a new scenario" in {
         tester.startScenario(scenario)
-//        tester.cache shouldEqual Map.empty
+        tester.scenarioResults shouldBe empty
       }
 
-//      "have a cache with one item with no results after calling checkContent" in {
-//        tester.checkContent()
-//        tester.cache.size shouldBe 1
-//        tester.cache should contain("da39a3ee5e6b4b0d3255bfef95601890afd80709" -> Seq.empty[AuditResult])
-//      }
+      "have empty results after testing an empty page" in {
+        val results = tester.checkContent(driver.getPageSource)
+        results shouldBe empty
+        tester.scenarioResults shouldBe empty
+      }
 
-      "call the underlying code sniffer and driver once when cache was empty" in {
+      "have called the checker and driver once after testing one page" in {
         verify(codeSniffer, times(1)).run(any())
         verify(driver, times(1)).getPageSource
       }
 
-      "write no results to the scenario" in {
+      "have written no results to the scenario after testing an empty page" in {
         verify(scenario, times(0)).write(any())
       }
 
@@ -142,27 +142,11 @@ class AuditTesterSpec extends WordSpec with Matchers with MockitoSugar {
         tester.endScenario()
         tester.scenarioResults shouldEqual Seq.empty
       }
-
-//      "maintain cache entries between scenarios" in {
-//        tester.cache.size shouldBe 1
-//        tester.cache should contain("da39a3ee5e6b4b0d3255bfef95601890afd80709" -> Seq.empty[AuditResult])
-//      }
-
-//      "reuse entries in the cache if possible and not call code sniffer again" in {
-//        tester.startScenario(scenario)
-//        tester.checkContent()
-//        tester.endScenario()
-//        tester.cache.size shouldBe 1
-//        tester.cache should contain("da39a3ee5e6b4b0d3255bfef95601890afd80709" -> Seq.empty[AuditResult])
-//        verify(codeSniffer, times(1)).run()
-//        verify(driver, times(2)).getPageSource
-//      }
     }
 
     "provide feedback for a non-empty page" should {
       val scenario = mock[Scenario]
       val codeSniffer = mock[CodeSniffer]
-      val emptyDriver = spy(nonEmptyPageDriver)
       val driver = spy(nonEmptyPageDriver)
       val warnings = Seq(
         AuditResult("WARNING", "WCAG 2.0", "<a>", "thing", "A description", "<a id='thing'>...</a>")
@@ -173,24 +157,38 @@ class AuditTesterSpec extends WordSpec with Matchers with MockitoSugar {
       )
       when(codeSniffer.run(any())).thenReturn(warnings ++ errors)
       val tester = new AuditTester(driver, _ => codeSniffer)
-      val emptyPageTester = new AuditTester(emptyDriver, _ => codeSniffer)
+
+      "start with empty results" in {
+        tester.scenarioResults shouldEqual Seq.empty
+      }
+
+      "not write results if end scenario is called before start scenario" in {
+        tester.endScenario()
+        verify(scenario, times(0)).write(any())
+      }
+
+      "not perform checking if check content is called before start scenario" in {
+        tester.checkContent("")
+        verify(codeSniffer, times(0)).run(any())
+        verify(scenario, times(0)).write(any())
+      }
+
+      "have empty results when starting a new scenario" in {
+        tester.startScenario(scenario)
+        tester.scenarioResults shouldBe empty
+      }
 
       "start with an empty results" in {
         tester.startScenario(scenario)
         tester.scenarioResults shouldEqual Seq.empty
       }
 
-//      "have a cache with one item with warnings and errors after calling checkContent" in {
-//        tester.checkContent()
-//        tester.cache.size shouldBe 1
-//        tester.cache should contain("5248762bf513ea3041c2e51669fbb191ece04c49" -> (warnings ++ errors))
-//      }
-
       "have the correct accumulated results after calling checkContent" in {
+        tester.checkContent(driver.getPageSource)
         tester.scenarioResults shouldBe warnings ++ errors
       }
 
-      "call the underlying code sniffer and driver once when cache was empty" in {
+      "call the underlying code sniffer and driver once when checking one page" in {
         verify(codeSniffer, times(1)).run(any())
         verify(driver, times(1)).getPageSource
       }
@@ -204,21 +202,6 @@ class AuditTesterSpec extends WordSpec with Matchers with MockitoSugar {
         tester.endScenario()
         verify(scenario, times(1)).write(contains("There were 2 error(s) and 1 warning(s)"))
       }
-
-//      "maintain cache entries between scenarios" in {
-//        tester.cache.size shouldBe 1
-//        tester.cache should contain("5248762bf513ea3041c2e51669fbb191ece04c49" -> (warnings ++ errors))
-//      }
-
-//      "reuse entries in the cache if possible and not call code sniffer again" in {
-//        tester.startScenario(scenario)
-//        tester.checkContent()
-//        tester.endScenario()
-//        tester.cache.size shouldBe 1
-//        tester.cache should contain("5248762bf513ea3041c2e51669fbb191ece04c49" -> (warnings ++ errors))
-//        verify(codeSniffer, times(1)).run()
-//        verify(driver, times(2)).getPageSource
-//      }
     }
   }
 }
