@@ -63,7 +63,10 @@ private object AppDependencies {
     "info.cukes" % "cucumber-java" % "1.2.2",
     "junit" % "junit" % "4.11" % "test",
     "com.novocode" % "junit-interface" % "0.11" % "test",
-    "org.jsoup" % "jsoup" % "1.10.3" % "test"
+    "org.jsoup" % "jsoup" % "1.10.3" % "test",
+    "nu.validator" % "validator" % "17.11.1",
+    "com.typesafe.play" % "play-json_2.11" % "2.6.7",
+    "nu.validator" % "validator" % "17.11.1"
   )
 
   def apply() : Seq[ModuleID] = test
