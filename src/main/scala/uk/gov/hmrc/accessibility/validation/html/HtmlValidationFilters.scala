@@ -25,8 +25,6 @@ object HtmlValidationFilters extends ResultFilters[HtmlValidationError] {
                | “icon” or the value “apple-touch-icon”.""".stripMargin.replace("\n", "")
 
   def headerFooterFilter : PartialFunction[HtmlValidationError, Boolean] = {
-
-
     case HtmlValidationError(_, _, _, `headerIcon`, _) => false
     case HtmlValidationError(_, _, _,
       """The “banner” role is unnecessary for element “header”.""", _) => false
