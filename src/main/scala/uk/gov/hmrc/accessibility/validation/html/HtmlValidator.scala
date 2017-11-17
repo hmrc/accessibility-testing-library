@@ -19,12 +19,13 @@ package uk.gov.hmrc.accessibility.validation.html
 import com.fasterxml.jackson.core.JsonParseException
 import com.fasterxml.jackson.databind.JsonMappingException
 import play.api.libs.json._
+import uk.gov.hmrc.accessibility.AccessibilityChecker
 import uk.gov.hmrc.accessibility.validation.ValidationRunner
 
-class HtmlValidator(val runner: ValidationRunner = new APIHtmlValidationRunner) {
+class HtmlValidator(val runner: ValidationRunner = new APIHtmlValidationRunner) extends AccessibilityChecker[HtmlValidationError] {
   private val Logger = java.util.logging.Logger.getLogger(getClass.getName)
 
-  def validate(source: String): Seq[HtmlValidationError] = {
+  def run(source: String): Seq[HtmlValidationError] = {
     val result = runner.run(source)
     convertJson(result)
   }

@@ -16,11 +16,9 @@
 
 package uk.gov.hmrc.accessibility.validation.html
 
-import java.util.logging.Logger
-
 import cucumber.api.Scenario
 import org.openqa.selenium.WebDriver
-import uk.gov.hmrc.accessibility.CucumberIntegration
+import uk.gov.hmrc.accessibility.{AccessibilityChecker, CachingChecker, CucumberAccessibilityTester}
 import uk.gov.hmrc.accessibility.validation.ValidationRunner
 
 object HtmlValidationTester {
@@ -29,43 +27,22 @@ object HtmlValidationTester {
   }
 }
 
-class HtmlValidationTester(driver: WebDriver, runner: ValidationRunner = new APIHtmlValidationRunner) extends CucumberIntegration {
-  val logger = Logger.getLogger(HtmlValidationTester.getClass.getName)
-  var currentScenario: Option[Scenario] = None
-  var scenarioResults: Seq[HtmlValidationError] = Seq.empty
-  val htmlValidator = new HtmlValidator(runner)
+class HtmlValidationTester(driver: WebDriver, runner: ValidationRunner = new APIHtmlValidationRunner,
+                           checkerCons: (ValidationRunner) => AccessibilityChecker[HtmlValidationError] =
+                           (runner: ValidationRunner) => new CachingChecker[HtmlValidationError](new HtmlValidator(runner)))
 
-  override def startScenario(scenario: Scenario): Unit = {
-    currentScenario = Some(scenario)
-    scenarioResults = Seq.empty
+  extends CucumberAccessibilityTester[HtmlValidationError] {
+  val checker: AccessibilityChecker[HtmlValidationError] = checkerCons(runner)
+
+  override def executeTest(pageSource: String): Seq[HtmlValidationError] = {
+    checker.run(pageSource)
   }
 
-  override def endScenario(): Unit = {
-    currentScenario match {
-      case Some(s) => {
-        s.write(HtmlValidationReporter.makeSummary(scenarioResults))
-        scenarioResults = Seq.empty
-        currentScenario = None
-      }
-      case None => {
-        logger.severe("endScenario has been called without startScenario so behaviour is undefined.")
-      }
-    }
+  override def writeStepResults(scenario: Scenario, results: Seq[HtmlValidationError]): Unit = {
+    scenario.write(s"""<h3>Found ${results.size} issues on "${driver.getTitle}" (${driver.getCurrentUrl})</h3>\n${HtmlValidationReporter.makeTable(results)}""")
   }
 
-  def checkContent(filter: HtmlValidationError => Boolean = HtmlValidationFilters.emptyFilter): Unit = {
-    currentScenario match {
-      case Some(s) => {
-        val results: Seq[HtmlValidationError] = htmlValidator.validate(driver.getPageSource)
-          .filter(filter)
-        if (results.nonEmpty) {
-          scenarioResults ++= results
-          s.write(s"""<h3>Found ${results.size} issues on "${driver.getTitle}" (${driver.getCurrentUrl})</h3>\n${HtmlValidationReporter.makeTable(results)}""")
-        }
-      }
-      case None => {
-        logger.severe("checkContent has been called without startScenario so no checking will be done.")
-      }
-    }
+  override def writeScenarioResults(scenario: Scenario, results: Seq[HtmlValidationError]): Unit = {
+    scenario.write(HtmlValidationReporter.makeSummary(scenarioResults))
   }
 }

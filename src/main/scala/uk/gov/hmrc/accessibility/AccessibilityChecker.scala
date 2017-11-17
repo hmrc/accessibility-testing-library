@@ -16,9 +16,8 @@
 
 package uk.gov.hmrc.accessibility
 
-import cucumber.api.Scenario
+trait AccessibilityChecker[T] {
 
-trait CucumberIntegration {
-  def startScenario(scenario : Scenario) : Unit
-  def endScenario() : Unit
+  def run(pageSource: String): Seq[T]
+
 }

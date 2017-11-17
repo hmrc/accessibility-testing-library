@@ -16,15 +16,14 @@
 
 package uk.gov.hmrc.accessibility.audit
 
-import java.security.MessageDigest
 import java.util.logging.Logger
 
 import cucumber.api.Scenario
 import org.openqa.selenium.{JavascriptExecutor, WebDriver}
-import uk.gov.hmrc.accessibility.CucumberIntegration
+import uk.gov.hmrc.accessibility.{AccessibilityChecker, CachingChecker, CucumberAccessibilityTester}
 
 object AuditTester {
-  val logger = Logger.getLogger(AuditTester.getClass.getName)
+  val logger: Logger = Logger.getLogger(getClass.getName)
 
   def initialise(driver: WebDriver, testerConstructor: (WebDriver with JavascriptExecutor => AuditTester) = new AuditTester(_)): Option[AuditTester] = {
     try {
@@ -44,58 +43,20 @@ object AuditTester {
 }
 
 class AuditTester(driver: WebDriver with JavascriptExecutor,
-                  codeSnifferConstructor: (WebDriver with JavascriptExecutor => CodeSniffer) = new CodeSniffer(_)) extends CucumberIntegration{
-  private lazy val digest = MessageDigest.getInstance("SHA1")
-  val logger = Logger.getLogger(AuditTester.getClass.getName)
-  val sniffer: CodeSniffer = codeSnifferConstructor(driver)
-  var currentScenario: Option[Scenario] = None
-  var scenarioResults: Seq[AuditResult] = Seq.empty
-  var cache: Map[String, Seq[AuditResult]] = Map.empty
+                  checkerCons: (WebDriver with JavascriptExecutor => AccessibilityChecker[AuditResult]) =
+                  driver => new CachingChecker[AuditResult](new CodeSniffer(driver)))
+  extends CucumberAccessibilityTester[AuditResult] {
+  val checker: AccessibilityChecker[AuditResult] = checkerCons(driver)
 
-  def startScenario(scenario: Scenario): Unit = {
-    currentScenario = Some(scenario)
-    scenarioResults = Seq.empty
+  override def executeTest(pageSource: String): Seq[AuditResult] = {
+    checker.run(pageSource)
   }
 
-  def endScenario(): Unit = {
-    currentScenario match {
-      case Some(s) => {
-        s.write(AuditReporter.makeSummary(scenarioResults))
-        scenarioResults = Seq.empty
-        currentScenario = None
-      }
-      case None => {
-        logger.severe("endScenario has been called without startScenario so behaviour is undefined.")
-      }
-    }
+  def writeStepResults(scenario : Scenario, results : Seq[AuditResult]) : Unit = {
+    scenario.write(s"""<h3>Found ${results.size} issues on "${driver.getTitle}" (${driver.getCurrentUrl})</h3>\n${AuditReporter.makeTable(results)}""")
   }
 
-  def checkContent(filter: AuditResult => Boolean = AuditFilters.emptyFilter): Unit = {
-    currentScenario match {
-      case Some(s) => {
-        val hash = hashcodeOf(driver.getPageSource)
-        val data = cache.getOrElse(hash, {
-          val results = sniffer.run()
-          cache = cache + (hash -> results)
-          results
-        }).filter(filter)
-        if (data.nonEmpty) {
-          scenarioResults ++= data
-          s.write(s"""<h3>Found ${data.size} issues on "${driver.getTitle}" (${driver.getCurrentUrl})</h3>\n${AuditReporter.makeTable(data)}""")
-        }
-      }
-      case None => {
-        logger.severe("checkContent has been called without startScenario so no checking will be done.")
-      }
-    }
+  override def writeScenarioResults(scenario: Scenario, results: Seq[AuditResult]): Unit = {
+    scenario.write(AuditReporter.makeSummary(scenarioResults))
   }
-
-  private def hashcodeOf(source: String): String = {
-    digest.digest(source.getBytes()).map(0xFF & _).map {
-      "%02x".format(_)
-    }.foldLeft("") {
-      _ + _
-    }
-  }
-
 }

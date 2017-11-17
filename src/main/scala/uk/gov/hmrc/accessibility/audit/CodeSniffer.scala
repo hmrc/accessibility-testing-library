@@ -20,17 +20,18 @@ import java.util.logging.Level
 
 import org.openqa.selenium.logging.LogEntry
 import org.openqa.selenium.{JavascriptExecutor, WebDriver}
+import uk.gov.hmrc.accessibility.AccessibilityChecker
 
 import scala.collection.JavaConverters._
 import scala.io.Source
 
-class CodeSniffer(driver: WebDriver with JavascriptExecutor) {
+class CodeSniffer(driver: WebDriver with JavascriptExecutor) extends AccessibilityChecker[AuditResult] {
   private val FilePath = "/HtmlCodeSniffer.js"
   private val JavaScript = Source.fromInputStream(getClass.getResourceAsStream(FilePath)).getLines().mkString("\n")
   private val CSCommand = "window.HTMLCS_RUNNER.run('WCAG2AA');"
   private val LogRegex = """^.*?"\[HTMLCS\]\s*(.*)\|(.*)\|(.*)\|(.*)\|(.*)\|(.*)"""".r
 
-  def run(): Seq[AuditResult] = {
+  override def run(pageSource : String): Seq[AuditResult] = {
     driver.manage().logs().get("browser") // Clear the unrelated logs
     driver.executeScript(JavaScript)
     driver.executeScript(CSCommand)

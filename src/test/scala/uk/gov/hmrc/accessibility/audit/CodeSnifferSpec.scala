@@ -69,7 +69,7 @@ class CodeSnifferSpec extends WordSpec with Matchers with MockitoSugar {
 
   "run" should {
     "produce the expected AccessibilityResult instances" in {
-      cs.run() shouldEqual results
+      cs.run("") shouldEqual results
     }
   }
 }
