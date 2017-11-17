@@ -20,6 +20,7 @@ import cucumber.api.Scenario
 import org.openqa.selenium.WebDriver
 import uk.gov.hmrc.accessibility.{AccessibilityChecker, CachingChecker, CucumberAccessibilityTester}
 import uk.gov.hmrc.accessibility.validation.ValidationRunner
+import uk.gov.hmrc.accessibility.validation.html.HtmlValidationFilters._
 
 object HtmlValidationTester {
   def initialise(driver: WebDriver, runner: ValidationRunner = new APIHtmlValidationRunner): Option[HtmlValidationTester] = {
@@ -30,10 +31,9 @@ object HtmlValidationTester {
 class HtmlValidationTester(driver: WebDriver, runner: ValidationRunner = new APIHtmlValidationRunner,
                            checkerCons: (ValidationRunner) => AccessibilityChecker[HtmlValidationError] =
                            (runner: ValidationRunner) => new CachingChecker[HtmlValidationError](new HtmlValidator(runner)))
-
   extends CucumberAccessibilityTester[HtmlValidationError] {
   val checker: AccessibilityChecker[HtmlValidationError] = checkerCons(runner)
-
+  
   override def executeTest(pageSource: String): Seq[HtmlValidationError] = {
     checker.run(pageSource)
   }

@@ -36,4 +36,12 @@ object HtmlValidationFilters extends ResultFilters[HtmlValidationError] {
       """The “contentinfo” role is unnecessary for element “footer”.""", _) => false
   }
 
+  def knownErrorsFilter : PartialFunction[HtmlValidationError, Boolean] = {
+    // We include the "list" role on ul and ol because of a VoiceOver bug
+    case HtmlValidationError(_, _, _,
+      """The “list” role is unnecessary for element “ul”.""", _) => false
+    case HtmlValidationError(_, _, _,
+    """The “list” role is unnecessary for element “ol”.""", _) => false
+  }
+
 }

@@ -22,7 +22,7 @@ import uk.gov.hmrc.accessibility.validation.html.HtmlValidationFilters._
 
 class HtmlValidationFiltersSpec extends WordSpec with Matchers with MockitoSugar {
 
-  private lazy val combinedResults : Seq[HtmlValidationError] = dummyErrors ++ headerFooterErrors
+  private lazy val combinedResults : Seq[HtmlValidationError] = dummyErrors ++ headerFooterErrors ++ knownErrors
 
   private val headerFooterErrors : Seq[HtmlValidationError] = Seq (
     HtmlValidationError(1, 2, 3, HtmlValidationFilters.headerIcon, ""),
@@ -32,11 +32,15 @@ class HtmlValidationFiltersSpec extends WordSpec with Matchers with MockitoSugar
     HtmlValidationError(1, 2, 3, """The “contentinfo” role is unnecessary for element “footer”.""" ,"")
   )
 
+  private val knownErrors : Seq[HtmlValidationError] = Seq (
+    HtmlValidationError(1, 2, 3, """The “list” role is unnecessary for element “ul”.""", ""),
+    HtmlValidationError(1, 2, 3, """The “list” role is unnecessary for element “ol”.""", "")
+  )
+
   private val dummyErrors : Seq[HtmlValidationError] = Seq(
     HtmlValidationError(1, 2, 3, "messageA" , "extractA"),
     HtmlValidationError(1, 2, 3, "messageB" , "extractB")
   )
-
 
   "emptyFilter" should {
     "retain all results" in {
@@ -49,6 +53,14 @@ class HtmlValidationFiltersSpec extends WordSpec with Matchers with MockitoSugar
       val filtered = combinedResults.filter(headerFooterFilter orElse emptyFilter)
       filtered.size should be (combinedResults.size - headerFooterErrors.size)
       filtered should not contain headerFooterErrors
+    }
+  }
+
+  "knownErrorsFilter" should {
+    "only remove results about known errors" in {
+      val filtered = combinedResults.filter(knownErrorsFilter orElse emptyFilter)
+      filtered.size should be (combinedResults.size - knownErrors.size)
+      filtered should not contain knownErrors
     }
   }
 }
