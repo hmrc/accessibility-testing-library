@@ -59,4 +59,6 @@ class AuditTester(driver: WebDriver with JavascriptExecutor,
   override def writeScenarioResults(scenario: Scenario, results: Seq[AuditResult]): Unit = {
     scenario.write(AuditReporter.makeSummary(scenarioResults))
   }
+
+  override def prettyName(): String = "Audit Tester"
 }

@@ -24,6 +24,11 @@ trait CucumberAccessibilityTester[T] {
   val logger: Logger = Logger.getLogger(getClass.getName)
   var currentScenario: Option[Scenario] = None
   var scenarioResults: Seq[T] = Seq.empty
+  var totalResults: Int = 0
+
+  Runtime.getRuntime.addShutdownHook(new Thread() {
+    override def run:  Unit = println(s"""${prettyName()}: ${totalResults} results found""")
+  })
 
   def startScenario(scenario : Scenario) : Unit = {
     currentScenario = Some(scenario)
@@ -51,6 +56,7 @@ trait CucumberAccessibilityTester[T] {
     currentScenario match {
       case Some(s) => {
         writeScenarioResults(s, scenarioResults)
+        totalResults += scenarioResults.size
         scenarioResults = Seq.empty
         currentScenario = None
       }
@@ -65,5 +71,7 @@ trait CucumberAccessibilityTester[T] {
   def writeStepResults(scenario: Scenario, results: Seq[T]): Unit
 
   def writeScenarioResults(scenario: Scenario, results: Seq[T]): Unit
+
+  def prettyName(): String
 
 }

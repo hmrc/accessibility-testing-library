@@ -20,7 +20,6 @@ import cucumber.api.Scenario
 import org.openqa.selenium.WebDriver
 import uk.gov.hmrc.accessibility.{AccessibilityChecker, CachingChecker, CucumberAccessibilityTester}
 import uk.gov.hmrc.accessibility.validation.ValidationRunner
-import uk.gov.hmrc.accessibility.validation.html.HtmlValidationFilters._
 
 object HtmlValidationTester {
   def initialise(driver: WebDriver, runner: ValidationRunner = new APIHtmlValidationRunner): Option[HtmlValidationTester] = {
@@ -33,7 +32,7 @@ class HtmlValidationTester(driver: WebDriver, runner: ValidationRunner = new API
                            (runner: ValidationRunner) => new CachingChecker[HtmlValidationError](new HtmlValidator(runner)))
   extends CucumberAccessibilityTester[HtmlValidationError] {
   val checker: AccessibilityChecker[HtmlValidationError] = checkerCons(runner)
-  
+
   override def executeTest(pageSource: String): Seq[HtmlValidationError] = {
     checker.run(pageSource)
   }
@@ -45,4 +44,6 @@ class HtmlValidationTester(driver: WebDriver, runner: ValidationRunner = new API
   override def writeScenarioResults(scenario: Scenario, results: Seq[HtmlValidationError]): Unit = {
     scenario.write(HtmlValidationReporter.makeSummary(scenarioResults))
   }
+
+  override def prettyName(): String = "HTML Validation Tester"
 }
