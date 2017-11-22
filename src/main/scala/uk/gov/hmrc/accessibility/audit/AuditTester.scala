@@ -53,7 +53,7 @@ class AuditTester(driver: WebDriver with JavascriptExecutor,
   }
 
   def writeStepResults(scenario : Scenario, results : Seq[AuditResult]) : Unit = {
-    scenario.write(s"""<h3>Found ${results.size} issues on "${driver.getTitle}" (${driver.getCurrentUrl})</h3>\n${AuditReporter.makeTable(results)}""")
+    scenario.write(s"""<h3>Audit: Found ${results.size} issues on "${driver.getTitle}" (${driver.getCurrentUrl})</h3>\n${AuditReporter.makeTable(results)}""")
   }
 
   override def writeScenarioResults(scenario: Scenario, results: Seq[AuditResult]): Unit = {

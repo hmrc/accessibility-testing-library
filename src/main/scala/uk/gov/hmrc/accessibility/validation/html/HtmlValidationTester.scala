@@ -38,7 +38,7 @@ class HtmlValidationTester(driver: WebDriver, runner: ValidationRunner = new API
   }
 
   override def writeStepResults(scenario: Scenario, results: Seq[HtmlValidationError]): Unit = {
-    scenario.write(s"""<h3>Found ${results.size} issues on "${driver.getTitle}" (${driver.getCurrentUrl})</h3>\n${HtmlValidationReporter.makeTable(results)}""")
+    scenario.write(s"""<h3>HTML: Found ${results.size} issues on "${driver.getTitle}" (${driver.getCurrentUrl})</h3>\n${HtmlValidationReporter.makeTable(results)}""")
   }
 
   override def writeScenarioResults(scenario: Scenario, results: Seq[HtmlValidationError]): Unit = {

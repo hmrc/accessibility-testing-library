@@ -93,7 +93,7 @@ class HtmlValidationTesterSpec extends WordSpec with Matchers with MockitoSugar 
     "write step results to scenario" in {
       tester.writeStepResults(scenario, Seq.empty)
       val output =
-        """<h3>Found 0 issues on "Empty page" (emptypage.com)</h3>
+        """<h3>HTML: Found 0 issues on "Empty page" (emptypage.com)</h3>
           |<table><thead><tr><th>Message</th><th>Extract</th><th>Location</th></tr></thead></tbody></table>""".stripMargin
       verify(scenario).write(output)
     }
