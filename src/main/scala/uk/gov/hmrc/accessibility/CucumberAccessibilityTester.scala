@@ -26,10 +26,6 @@ trait CucumberAccessibilityTester[T] {
   var scenarioResults: Seq[T] = Seq.empty
   var totalResults: Int = 0
 
-  Runtime.getRuntime.addShutdownHook(new Thread() {
-    override def run:  Unit = println(s"""${prettyName()}: ${totalResults} results found""")
-  })
-
   def startScenario(scenario : Scenario) : Unit = {
     currentScenario = Some(scenario)
     scenarioResults = Seq.empty
@@ -64,6 +60,12 @@ trait CucumberAccessibilityTester[T] {
         logger.severe("endScenario has been called without startScenario so behaviour is undefined.")
       }
     }
+  }
+
+  def printTotalResults(): Unit = {
+    val color = if (totalResults > 0) "\u001B[37;41m" else ""
+    val reset = "\u001B[0m"
+    println(s"""${prettyName()}: $color${totalResults} results found$reset""")
   }
 
   def executeTest(pageSource: String): Seq[T]
