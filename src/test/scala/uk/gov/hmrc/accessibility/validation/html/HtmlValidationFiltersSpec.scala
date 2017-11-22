@@ -34,7 +34,8 @@ class HtmlValidationFiltersSpec extends WordSpec with Matchers with MockitoSugar
 
   private val knownErrors : Seq[HtmlValidationError] = Seq (
     HtmlValidationError(1, 2, 3, """The “list” role is unnecessary for element “ul”.""", ""),
-    HtmlValidationError(1, 2, 3, """The “list” role is unnecessary for element “ol”.""", "")
+    HtmlValidationError(1, 2, 3, """The “list” role is unnecessary for element “ol”.""", ""),
+    HtmlValidationError(1, 2, 3, """The “button” role is unnecessary for element “summary”.""", "")
   )
 
   private val dummyErrors : Seq[HtmlValidationError] = Seq(

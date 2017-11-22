@@ -30,4 +30,9 @@ object AuditFilters extends ResultFilters[AuditResult] {
   def webChatFilter : PartialFunction[AuditResult, Boolean] = {
     case AuditResult("ERROR","WCAG2AA.Principle2.Guideline2_4.2_4_1.H64.1","iframe","#egot_iframe",_,_) => false
   }
+
+  def knownErrorsFilter : PartialFunction[AuditResult, Boolean] = {
+    case AuditResult("WARNING","WCAG2AA.Principle1.Guideline1_4.1_4_3.G18.BgImage",_,_,
+      """This element's text is placed on a background image. Ensure the contrast ratio between the text and all covered parts of the image are at least 4.5:1.""", _) => false
+  }
 }

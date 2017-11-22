@@ -22,7 +22,7 @@ import uk.gov.hmrc.accessibility.audit.AuditFilters._
 
 class AuditFiltersSpec extends WordSpec with Matchers with MockitoSugar {
 
-  private lazy val combinedResults = dummyResults ++ webChatResults ++ headerFooterResults
+  private lazy val combinedResults = dummyResults ++ webChatResults ++ headerFooterResults ++ knownResults
 
   private val headerFooterResults : Seq[AuditResult] = Seq(
     AuditResult("ERROR","WCAG2AA.Principle1.Guideline1_4.1_4_3.G18.Fail","strong","","","&#x003C;strong class=\"phase-tag\">...&#x003C;/strong>"),
@@ -30,6 +30,10 @@ class AuditFiltersSpec extends WordSpec with Matchers with MockitoSugar {
     AuditResult("WARNING","WCAG2AA.Principle1.Guideline1_1.1_1_1.H67.2","img","","","template/assets/images/gov.uk_logotype_crown.png\" alt=\"\">"),
     AuditResult("WARNING","WCAG2AA.Principle1.Guideline1_4.1_4_3.G18.BgImage","span","","","&#x003C;span class=\"organisation-logo organisation-logo-medium\">...&#x003C;/span>"),
     AuditResult("WARNING","WCAG2AA.Principle1.Guideline1_4.1_4_3.G18.BgImage","a","","","&#x003C;a href=\"http://www.nationalarchives.gov.uk/information-management/our-services/crown-copyright.htm\" target=\"_blank\">...&#x003C;/a>")
+  )
+
+  private val knownResults : Seq[AuditResult] = Seq(
+    AuditResult("WARNING","WCAG2AA.Principle1.Guideline1_4.1_4_3.G18.BgImage","th","","This element's text is placed on a background image. Ensure the contrast ratio between the text and all covered parts of the image are at least 4.5:1.","<th>...</th>")
   )
 
   private val dummyResults : Seq[AuditResult] = Seq(
@@ -60,6 +64,14 @@ class AuditFiltersSpec extends WordSpec with Matchers with MockitoSugar {
       val filtered = combinedResults.filter(headerFooterFilter orElse emptyFilter)
       filtered.size should be (combinedResults.size - headerFooterResults.size)
       filtered should not contain headerFooterResults
+    }
+  }
+
+  "knownErrorsFilter" should {
+    "only remove results about known errors" in {
+      val filtered = combinedResults.filter(knownErrorsFilter orElse emptyFilter)
+      filtered.size should be (combinedResults.size - knownResults.size)
+      filtered should not contain knownResults
     }
   }
 }

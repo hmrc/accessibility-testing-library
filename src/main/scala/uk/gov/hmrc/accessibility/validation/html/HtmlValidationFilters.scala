@@ -42,6 +42,10 @@ object HtmlValidationFilters extends ResultFilters[HtmlValidationError] {
       """The “list” role is unnecessary for element “ul”.""", _) => false
     case HtmlValidationError(_, _, _,
     """The “list” role is unnecessary for element “ol”.""", _) => false
+
+    // The polyfill for old browsers causes the below validation error
+    case HtmlValidationError(_, _, _,
+    """The “button” role is unnecessary for element “summary”.""", _) => false
   }
 
 }
