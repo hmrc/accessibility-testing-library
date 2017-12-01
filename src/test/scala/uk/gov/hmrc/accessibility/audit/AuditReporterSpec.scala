@@ -79,4 +79,24 @@ class AuditReporterSpec extends WordSpec with Matchers with MockitoSugar {
       }
     }
   }
+
+  def makeStandardLink(standard: String): String = s"https://squizlabs.github.io/HTML_CodeSniffer/Standards/WCAG2/$standard#sniff-coverage"
+  def makeTechniqueLink(technique: String): String = s"https://www.w3.org/TR/WCAG20-TECHS/$technique"
+
+  val links = Table(
+    ("input", "standard", "technique"),
+    ("WCAG2AA.Principle1.Guideline1_4.1_4_3.G18.Abs", "1_4_3", "G18"),
+    ("WCAG2AA.Principle4.Guideline4_1.4_1_1.F77", "4_1_1", "F77"),
+    ("WCAG2AA.Principle1.Guideline1_3.1_3_1_A.G141", "1_3_1", "G141"),
+    ("WCAG2AA.Principle4.Guideline4_1.4_1_2.H91.Fieldset.Name", "4_1_2", "H91"),
+    ("WCAG2AA.Principle1.Guideline1_3.1_3_1.H71.NoLegend", "1_3_1", "H71")
+  )
+
+  "linkStandard" should {
+    forAll(links) {(input, standard, technique) =>
+      s"give correct links for $input" in {
+        linkStandard(input) shouldBe s"""<a href="${makeStandardLink(standard)}">(Description)</a><a href="${makeTechniqueLink(technique)}">(Standard)</a>"""
+      }
+    }
+  }
 }

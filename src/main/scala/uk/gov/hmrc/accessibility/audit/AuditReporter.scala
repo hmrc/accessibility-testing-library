@@ -20,6 +20,8 @@ import uk.gov.hmrc.accessibility.AccessibilityReporter
 
 object AuditReporter extends AccessibilityReporter[AuditResult] {
 
+  val regex = """WCAG2[A]+\.Principle\d\.Guideline\w+\.([\d_]+\d)[\w]*\.(\w+).*""".r
+
   override val ReportName: String = "Audit summary"
 
   override def headingValues(): Seq[String] = Seq(
@@ -34,7 +36,7 @@ object AuditReporter extends AccessibilityReporter[AuditResult] {
   override def rowValues(item: AuditResult): Seq[String] = {
     Seq(
       item.level,
-      item.standard,
+      item.standard + linkStandard(item.standard),
       item.element,
       item.identifier,
       item.description,
@@ -46,6 +48,17 @@ object AuditReporter extends AccessibilityReporter[AuditResult] {
     val grouped = data.groupBy(_.level)
     s"There were ${grouped.getOrElse("ERROR", Seq.empty).size} error(s) " +
       s"and ${grouped.getOrElse("WARNING", Seq.empty).size} warning(s)."
+  }
+
+  def linkStandard(standard: String): String = {
+    standard match {
+      case regex(reference, technique) => {
+        val referenceUrl = s"https://squizlabs.github.io/HTML_CodeSniffer/Standards/WCAG2/$reference#sniff-coverage"
+        val techniqueUrl = s"https://www.w3.org/TR/WCAG20-TECHS/$technique"
+        s""" <a href="$referenceUrl">(Description)</a> <a href="$techniqueUrl">(Standard)</a> """
+      }
+      case _ => ""
+    }
   }
 
 }
