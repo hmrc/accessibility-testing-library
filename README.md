@@ -81,7 +81,17 @@ object RunSuite {
 }
 ```
 
-6. Run your tests as usual with Chrome, ensuring you have provided the required command line arguments to enabled the accessibility testers, and review the detailed results in the Cucumber report as needed.
+6. Ensure that your driver is configured to capture the browser logs:
+```scala
+...
+val logPrefs = new LoggingPreferences
+logPrefs.enable(LogType.BROWSER, Level.ALL)
+options.setCapability(CapabilityType.LOGGING_PREFS, logPrefs)  
+...
+new ChromeDriver(options)
+```
+
+7. Run your tests as usual with Chrome, ensuring you have provided the required command line arguments to enabled the accessibility testers, and review the detailed results in the Cucumber report as needed.
 
 ### Filtering results
 By default, all possible issues found will be included in the Cucumber report. However, these may include problems outside of the control of teams (e.g., header or footer content from templates that must be used) or known false positives (e.g., intentional non-compliance to accommodate bugs in other software).
