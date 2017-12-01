@@ -95,7 +95,7 @@ class AuditReporterSpec extends WordSpec with Matchers with MockitoSugar {
   "linkStandard" should {
     forAll(links) {(input, standard, technique) =>
       s"give correct links for $input" in {
-        linkStandard(input) shouldBe s"""<a href="${makeStandardLink(standard)}">(Description)</a><a href="${makeTechniqueLink(technique)}">(Standard)</a>"""
+        linkStandard(input) shouldBe s""" <a href="${makeStandardLink(standard)}">(Description)</a> <a href="${makeTechniqueLink(technique)}">(Standard)</a> """
       }
     }
   }
