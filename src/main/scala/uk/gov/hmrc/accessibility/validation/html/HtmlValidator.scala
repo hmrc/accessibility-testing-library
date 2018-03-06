@@ -34,8 +34,18 @@ class HtmlValidator(val runner: ValidationRunner = new APIHtmlValidationRunner) 
     if (result == "") {
       Seq()
     } else {
+
+      println("*" * 20)
+      println(s"result: $result")
+      println("*" * 20)
+
       try {
         val wrapped = Json.parse(result)
+
+        println("*" * 20)
+        println(s"wrapped: $wrapped")
+        println("*" * 20)
+
         (wrapped \ "messages").as[Seq[HtmlValidationError]]
       } catch {
         case e @ (_ : JsonMappingException| _ : JsonParseException) => {
