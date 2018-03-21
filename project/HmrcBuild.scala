@@ -24,18 +24,13 @@ object HmrcBuild extends Build {
 
   val appName = "accessibility-testing-library"
 
-  val hmrcRepoHost = java.lang.System.getProperty("hmrc.repo.host", "https://nexus-preview.tax.service.gov.uk")
-
   lazy val microservice = Project(appName, file("."))
     .enablePlugins(SbtAutoBuildPlugin, SbtGitVersioning)
     .settings(
       scalaVersion := "2.11.11",
       libraryDependencies ++= AppDependencies(),
       crossScalaVersions := Seq("2.11.7"),
-      resolvers ++= Seq(
-        "hmrc-snapshots" at hmrcRepoHost + "/content/repositories/hmrc-snapshots",
-        "hmrc-releases" at hmrcRepoHost + "/content/repositories/hmrc-releases",
-        "hmrc-releases-bintray" at "https://hmrc.bintray.com/releases/")
+      resolvers ++= Seq("hmrc-releases-bintray" at "https://hmrc.bintray.com/releases/")
     )
     .settings(scoverageSettings)
 
