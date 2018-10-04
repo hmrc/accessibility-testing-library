@@ -34,48 +34,45 @@ class AuditTesterSpec extends WordSpec with Matchers with MockitoSugar {
   val scenario = mock[Scenario]
 
   class InsufficientDriver extends WebDriver {
-    override def getPageSource: String = ???
+    override def getPageSource: String                       = ???
     override def findElements(by: By): util.List[WebElement] = ???
-    override def getWindowHandle: String = ???
-    override def get(url: String): Unit = ???
-    override def manage(): Options = ???
-    override def getWindowHandles: util.Set[String] = ???
-    override def switchTo(): TargetLocator = ???
-    override def close(): Unit = ???
-    override def quit(): Unit = ???
-    override def getCurrentUrl: String = ???
-    override def navigate(): Navigation = ???
-    override def getTitle: String = ???
-    override def findElement(by: By): WebElement = ???
+    override def getWindowHandle: String                     = ???
+    override def get(url: String): Unit                      = ???
+    override def manage(): Options                           = ???
+    override def getWindowHandles: util.Set[String]          = ???
+    override def switchTo(): TargetLocator                   = ???
+    override def close(): Unit                               = ???
+    override def quit(): Unit                                = ???
+    override def getCurrentUrl: String                       = ???
+    override def navigate(): Navigation                      = ???
+    override def getTitle: String                            = ???
+    override def findElement(by: By): WebElement             = ???
   }
 
   class SufficientDriver extends InsufficientDriver with JavascriptExecutor {
     override def executeAsyncScript(script: String, args: AnyRef*): AnyRef = ???
-    override def executeScript(script: String, args: AnyRef*): AnyRef = ???
+    override def executeScript(script: String, args: AnyRef*): AnyRef      = ???
   }
 
   class EmptyPageDriver extends SufficientDriver {
-    override def executeAsyncScript(script: String, args: AnyRef*): AnyRef = {
+    override def executeAsyncScript(script: String, args: AnyRef*): AnyRef =
       AnyRef
-    }
-    override def getPageSource: String = {
+    override def getPageSource: String =
       ""
-    }
-    override def getTitle: String = "Empty page"
+    override def getTitle: String      = "Empty page"
     override def getCurrentUrl: String = "emptypage.com"
   }
 
   class NonEmptyPageDriver extends EmptyPageDriver {
-    override def getPageSource: String = {
+    override def getPageSource: String =
       "A non-empty page"
-    }
-    override def getTitle: String = "Non-empty page"
+    override def getTitle: String      = "Non-empty page"
     override def getCurrentUrl: String = "nonemptypage.com"
   }
 
   val insufficientDriver = new InsufficientDriver
-  val sufficientDriver = new SufficientDriver
-  val emptyPageDriver = new EmptyPageDriver
+  val sufficientDriver   = new SufficientDriver
+  val emptyPageDriver    = new EmptyPageDriver
   val nonEmptyPageDriver = new NonEmptyPageDriver
 
   "the companion object" can {
@@ -96,7 +93,7 @@ class AuditTesterSpec extends WordSpec with Matchers with MockitoSugar {
   "the tester class" can {
 
     "provide empty feedback for an empty page" should {
-      val scenario = mock[Scenario]
+      val scenario    = mock[Scenario]
       val codeSniffer = mock[CodeSniffer]
       when(codeSniffer.run(any())).thenReturn(Seq())
       val driver = spy(emptyPageDriver)
@@ -125,7 +122,7 @@ class AuditTesterSpec extends WordSpec with Matchers with MockitoSugar {
 
       "have empty results after testing an empty page" in {
         val results = tester.checkContent(driver.getPageSource)
-        results shouldBe empty
+        results                shouldBe empty
         tester.scenarioResults shouldBe empty
       }
 
@@ -145,9 +142,9 @@ class AuditTesterSpec extends WordSpec with Matchers with MockitoSugar {
     }
 
     "provide feedback for a non-empty page" should {
-      val scenario = mock[Scenario]
+      val scenario    = mock[Scenario]
       val codeSniffer = mock[CodeSniffer]
-      val driver = spy(nonEmptyPageDriver)
+      val driver      = spy(nonEmptyPageDriver)
       val warnings = Seq(
         AuditResult("WARNING", "WCAG 2.0", "<a>", "thing", "A description", "<a id='thing'>...</a>")
       )

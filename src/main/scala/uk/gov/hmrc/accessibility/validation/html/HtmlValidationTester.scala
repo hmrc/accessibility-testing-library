@@ -22,28 +22,30 @@ import uk.gov.hmrc.accessibility.{AccessibilityChecker, CachingChecker, Cucumber
 import uk.gov.hmrc.accessibility.validation.ValidationRunner
 
 object HtmlValidationTester {
-  def initialise(driver: WebDriver, runner: ValidationRunner = new APIHtmlValidationRunner): Option[HtmlValidationTester] = {
+  def initialise(
+    driver: WebDriver,
+    runner: ValidationRunner = new APIHtmlValidationRunner): Option[HtmlValidationTester] =
     Some(new HtmlValidationTester(driver, runner))
-  }
 }
 
-class HtmlValidationTester(driver: WebDriver, runner: ValidationRunner = new APIHtmlValidationRunner,
-                           checkerCons: (ValidationRunner) => AccessibilityChecker[HtmlValidationError] =
-                           (runner: ValidationRunner) => new CachingChecker[HtmlValidationError](new HtmlValidator(runner)))
-  extends CucumberAccessibilityTester[HtmlValidationError] {
+class HtmlValidationTester(
+  driver: WebDriver,
+  runner: ValidationRunner = new APIHtmlValidationRunner,
+  checkerCons: (ValidationRunner) => AccessibilityChecker[HtmlValidationError] = (runner: ValidationRunner) =>
+    new CachingChecker[HtmlValidationError](new HtmlValidator(runner)))
+    extends CucumberAccessibilityTester[HtmlValidationError] {
   val checker: AccessibilityChecker[HtmlValidationError] = checkerCons(runner)
 
-  override def executeTest(pageSource: String): Seq[HtmlValidationError] = {
+  override def executeTest(pageSource: String): Seq[HtmlValidationError] =
     checker.run(pageSource)
-  }
 
-  override def writeStepResults(scenario: Scenario, results: Seq[HtmlValidationError]): Unit = {
-    scenario.write(s"""<h3>HTML: Found ${results.size} issues on "${driver.getTitle}" (${driver.getCurrentUrl})</h3>\n${HtmlValidationReporter.makeTable(results)}""")
-  }
+  override def writeStepResults(scenario: Scenario, results: Seq[HtmlValidationError]): Unit =
+    scenario.write(
+      s"""<h3>HTML: Found ${results.size} issues on "${driver.getTitle}" (${driver.getCurrentUrl})</h3>\n${HtmlValidationReporter
+        .makeTable(results)}""")
 
-  override def writeScenarioResults(scenario: Scenario, results: Seq[HtmlValidationError]): Unit = {
+  override def writeScenarioResults(scenario: Scenario, results: Seq[HtmlValidationError]): Unit =
     scenario.write(HtmlValidationReporter.makeSummary(scenarioResults))
-  }
 
   override def prettyName(): String = "HTML Validation Tester"
 }

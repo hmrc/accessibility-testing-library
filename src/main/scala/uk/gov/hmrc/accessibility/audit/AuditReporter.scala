@@ -33,7 +33,7 @@ object AuditReporter extends AccessibilityReporter[AuditResult] {
     "Context"
   )
 
-  override def rowValues(item: AuditResult): Seq[String] = {
+  override def rowValues(item: AuditResult): Seq[String] =
     Seq(
       item.level,
       item.standard + linkStandard(item.standard),
@@ -42,7 +42,6 @@ object AuditReporter extends AccessibilityReporter[AuditResult] {
       item.description,
       item.context
     )
-  }
 
   override def summaryContent(data: Seq[AuditResult]): String = {
     val grouped = data.groupBy(_.level)
@@ -50,7 +49,7 @@ object AuditReporter extends AccessibilityReporter[AuditResult] {
       s"and ${grouped.getOrElse("WARNING", Seq.empty).size} warning(s)."
   }
 
-  def linkStandard(standard: String): String = {
+  def linkStandard(standard: String): String =
     standard match {
       case regex(reference, technique) => {
         val referenceUrl = s"https://squizlabs.github.io/HTML_CodeSniffer/Standards/WCAG2/$reference#sniff-coverage"
@@ -59,6 +58,5 @@ object AuditReporter extends AccessibilityReporter[AuditResult] {
       }
       case _ => ""
     }
-  }
 
 }

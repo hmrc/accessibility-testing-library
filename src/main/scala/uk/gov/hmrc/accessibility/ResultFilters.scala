@@ -17,7 +17,7 @@
 package uk.gov.hmrc.accessibility
 
 trait ResultFilters[T] {
-  def emptyFilter : PartialFunction[T, Boolean] = {
+  def emptyFilter: PartialFunction[T, Boolean] = {
     case _ => true
   }
 }

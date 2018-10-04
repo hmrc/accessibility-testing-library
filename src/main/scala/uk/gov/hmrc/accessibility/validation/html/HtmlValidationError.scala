@@ -19,11 +19,7 @@ package uk.gov.hmrc.accessibility.validation.html
 import play.api.libs.json.{JsPath, Reads}
 import play.api.libs.functional.syntax._
 
-case class HtmlValidationError(line: Int,
-                               startCol: Int,
-                               endCol: Int,
-                               message: String,
-                               extract: String)
+case class HtmlValidationError(line: Int, startCol: Int, endCol: Int, message: String, extract: String)
 
 object HtmlValidationError {
   implicit val htmlErrorReads: Reads[HtmlValidationError] = (
@@ -32,5 +28,5 @@ object HtmlValidationError {
       (JsPath \ "lastColumn").read[Int] and
       (JsPath \ "message").read[String] and
       (JsPath \ "extract").read[String]
-    ) (HtmlValidationError.apply _)
+  )(HtmlValidationError.apply _)
 }

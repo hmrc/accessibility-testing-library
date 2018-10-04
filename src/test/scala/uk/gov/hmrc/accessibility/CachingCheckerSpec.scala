@@ -22,7 +22,7 @@ import org.scalatest.{Matchers, WordSpec}
 import org.scalatest.mock.MockitoSugar
 
 class CachingCheckerSpec extends WordSpec with Matchers with MockitoSugar {
-  def getWrapped() : AccessibilityChecker[String] = {
+  def getWrapped(): AccessibilityChecker[String] = {
     val wrappedChecker: AccessibilityChecker[String] = mock[AccessibilityChecker[String]]
     when(wrappedChecker.run(any())).thenReturn(Seq("a", "b"))
     wrappedChecker
@@ -39,14 +39,14 @@ class CachingCheckerSpec extends WordSpec with Matchers with MockitoSugar {
 
     "obtain results from wrapped checker and add to cache" in {
       val results: Seq[String] = caching.run("page")
-      results shouldBe resultSeq
+      results       shouldBe resultSeq
       caching.cache shouldBe Map("767013ce0ee0f6d7a07587912eba3104cfaabc15" -> resultSeq)
       verify(wrapped, times(1)).run(any())
     }
 
     "use cache values" in {
       val results: Seq[String] = caching.run("page")
-      results shouldBe resultSeq
+      results       shouldBe resultSeq
       caching.cache shouldBe Map("767013ce0ee0f6d7a07587912eba3104cfaabc15" -> resultSeq)
       verify(wrapped, times(1)).run(any())
     }

@@ -25,12 +25,11 @@ import uk.gov.hmrc.accessibility.audit.AuditReporter._
 
 class AuditReporterSpec extends WordSpec with Matchers with MockitoSugar {
 
-  private val errorResult = AuditResult("ERROR","standard","element","identifier","description", "context")
-  private val warningResult = AuditResult("WARNING","standard","element","identifier","description", "context")
+  private val errorResult   = AuditResult("ERROR", "standard", "element", "identifier", "description", "context")
+  private val warningResult = AuditResult("WARNING", "standard", "element", "identifier", "description", "context")
 
-  private def makeSeq(errors : Int, warnings : Int) : Seq[AuditResult] = {
+  private def makeSeq(errors: Int, warnings: Int): Seq[AuditResult] =
     Seq.fill(errors)(errorResult) ++ Seq.fill(warnings)(warningResult)
-  }
 
   val summaries = Table(
     ("errors", "warnings", "message"),
@@ -41,23 +40,23 @@ class AuditReporterSpec extends WordSpec with Matchers with MockitoSugar {
     (0, 2, "There were 0 error(s) and 2 warning(s)"),
     (2, 2, "There were 2 error(s) and 2 warning(s)")
   )
-  
+
   "makeScenarioSummary" should {
     forAll(summaries) { (e, w, msg) =>
       s"give the message '$msg' when there are $e errors and $w warnings" in {
-        summaryContent(makeSeq(e,w)) should include(msg)
+        summaryContent(makeSeq(e, w)) should include(msg)
       }
     }
   }
 
-  private def checkTableHead(doc : Document): Unit = {
+  private def checkTableHead(doc: Document): Unit = {
     doc.getElementsByTag("table").size() shouldBe 1
     doc.getElementsByTag("thead").size() shouldBe 1
-    doc.select("thead tr").size() shouldBe 1
+    doc.select("thead tr").size()        shouldBe 1
   }
 
-  private def checkTableRowCount(doc : Document, errors : Int, warnings : Int): Unit = {
-    doc.getElementsContainingOwnText("ERROR").size() shouldBe errors
+  private def checkTableRowCount(doc: Document, errors: Int, warnings: Int): Unit = {
+    doc.getElementsContainingOwnText("ERROR").size()   shouldBe errors
     doc.getElementsContainingOwnText("WARNING").size() shouldBe warnings
   }
 
@@ -71,7 +70,7 @@ class AuditReporterSpec extends WordSpec with Matchers with MockitoSugar {
   )
 
   "makeTable" should {
-    forAll(tables) {(e, w, msg) =>
+    forAll(tables) { (e, w, msg) =>
       msg in {
         val output: Document = Jsoup.parse(makeTable(makeSeq(e, w)))
         checkTableHead(output)
@@ -80,7 +79,8 @@ class AuditReporterSpec extends WordSpec with Matchers with MockitoSugar {
     }
   }
 
-  def makeStandardLink(standard: String): String = s"https://squizlabs.github.io/HTML_CodeSniffer/Standards/WCAG2/$standard#sniff-coverage"
+  def makeStandardLink(standard: String): String =
+    s"https://squizlabs.github.io/HTML_CodeSniffer/Standards/WCAG2/$standard#sniff-coverage"
   def makeTechniqueLink(technique: String): String = s"https://www.w3.org/TR/WCAG20-TECHS/$technique"
 
   val links = Table(
@@ -93,9 +93,10 @@ class AuditReporterSpec extends WordSpec with Matchers with MockitoSugar {
   )
 
   "linkStandard" should {
-    forAll(links) {(input, standard, technique) =>
+    forAll(links) { (input, standard, technique) =>
       s"give correct links for $input" in {
-        linkStandard(input) shouldBe s""" <a href="${makeStandardLink(standard)}">(Description)</a> <a href="${makeTechniqueLink(technique)}">(Standard)</a> """
+        linkStandard(input) shouldBe s""" <a href="${makeStandardLink(standard)}">(Description)</a> <a href="${makeTechniqueLink(
+          technique)}">(Standard)</a> """
       }
     }
   }

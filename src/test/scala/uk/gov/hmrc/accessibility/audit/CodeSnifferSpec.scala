@@ -41,10 +41,34 @@ class CodeSnifferSpec extends WordSpec with Matchers with MockitoSugar {
   ).map(x => new LogEntry(Level.INFO, 0, x))
 
   val results = Seq(
-    AuditResult("ERROR", "WCAG2AA.PrincipleX.GuidelineY_Z.0_0_0.H1,H2", "a", "", "Helpful desc", "<a href=\"ref\">...</a>"),
-    AuditResult("ERROR", "WCAG2AA.PrincipleX.GuidelineY_Z.0_0_0.H1,H2", "a", "id", "Helpful desc", "<a href=\"ref\">...</a>"),
-    AuditResult("WARNING", "WCAG2AA.PrincipleX.GuidelineY_Z.0_0_0.H1,H2", "a", "", "Helpful desc", "<a href=\"ref\">...</a>"),
-    AuditResult("WARNING", "WCAG2AA.PrincipleX.GuidelineY_Z.0_0_0.H1,H2", "a", "id", "Helpful desc", "<a href=\"ref\">...</a>")
+    AuditResult(
+      "ERROR",
+      "WCAG2AA.PrincipleX.GuidelineY_Z.0_0_0.H1,H2",
+      "a",
+      "",
+      "Helpful desc",
+      "<a href=\"ref\">...</a>"),
+    AuditResult(
+      "ERROR",
+      "WCAG2AA.PrincipleX.GuidelineY_Z.0_0_0.H1,H2",
+      "a",
+      "id",
+      "Helpful desc",
+      "<a href=\"ref\">...</a>"),
+    AuditResult(
+      "WARNING",
+      "WCAG2AA.PrincipleX.GuidelineY_Z.0_0_0.H1,H2",
+      "a",
+      "",
+      "Helpful desc",
+      "<a href=\"ref\">...</a>"),
+    AuditResult(
+      "WARNING",
+      "WCAG2AA.PrincipleX.GuidelineY_Z.0_0_0.H1,H2",
+      "a",
+      "id",
+      "Helpful desc",
+      "<a href=\"ref\">...</a>")
   )
 
   // Needed because Mockito doesn't seem to get along with subtyping multiple classes
@@ -57,8 +81,8 @@ class CodeSnifferSpec extends WordSpec with Matchers with MockitoSugar {
   "processLogs" should {
     "ignore log entries at NOTICE level and retain all others" in {
       val grouped = cs.processLogs(logEntries).groupBy(_.level)
-      grouped.getOrElse("NOTICE", Seq()).size shouldBe 0
-      grouped.getOrElse("ERROR", Seq()).size shouldBe 2
+      grouped.getOrElse("NOTICE", Seq()).size  shouldBe 0
+      grouped.getOrElse("ERROR", Seq()).size   shouldBe 2
       grouped.getOrElse("WARNING", Seq()).size shouldBe 2
     }
 

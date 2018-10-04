@@ -22,7 +22,8 @@ import play.api.libs.json._
 import uk.gov.hmrc.accessibility.AccessibilityChecker
 import uk.gov.hmrc.accessibility.validation.ValidationRunner
 
-class HtmlValidator(val runner: ValidationRunner = new APIHtmlValidationRunner) extends AccessibilityChecker[HtmlValidationError] {
+class HtmlValidator(val runner: ValidationRunner = new APIHtmlValidationRunner)
+    extends AccessibilityChecker[HtmlValidationError] {
   private val Logger = java.util.logging.Logger.getLogger(getClass.getName)
 
   def run(source: String): Seq[HtmlValidationError] = {
@@ -30,7 +31,7 @@ class HtmlValidator(val runner: ValidationRunner = new APIHtmlValidationRunner) 
     convertJson(result)
   }
 
-  def convertJson(result: String): Seq[HtmlValidationError] = {
+  def convertJson(result: String): Seq[HtmlValidationError] =
     if (result == "") {
       Seq()
     } else {
@@ -38,11 +39,10 @@ class HtmlValidator(val runner: ValidationRunner = new APIHtmlValidationRunner) 
         val wrapped = Json.parse(result)
         (wrapped \ "messages").as[Seq[HtmlValidationError]]
       } catch {
-        case e @ (_ : JsonMappingException| _ : JsonParseException) => {
+        case e @ (_: JsonMappingException | _: JsonParseException) => {
           Logger.warning(e.getMessage)
           Seq()
         }
       }
     }
-  }
 }

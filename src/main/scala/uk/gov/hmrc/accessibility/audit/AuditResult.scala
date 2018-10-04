@@ -16,9 +16,10 @@
 
 package uk.gov.hmrc.accessibility.audit
 
-case class AuditResult(level: String,
-                       standard: String,
-                       element: String,
-                       identifier: String,
-                       description: String,
-                       context: String)
+case class AuditResult(
+  level: String,
+  standard: String,
+  element: String,
+  identifier: String,
+  description: String,
+  context: String)

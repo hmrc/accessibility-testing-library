@@ -21,17 +21,17 @@ import java.util.logging.Logger
 import cucumber.api.Scenario
 
 trait CucumberAccessibilityTester[T] {
-  val logger: Logger = Logger.getLogger(getClass.getName)
+  val logger: Logger                    = Logger.getLogger(getClass.getName)
   var currentScenario: Option[Scenario] = None
-  var scenarioResults: Seq[T] = Seq.empty
-  var totalResults: Int = 0
+  var scenarioResults: Seq[T]           = Seq.empty
+  var totalResults: Int                 = 0
 
-  def startScenario(scenario : Scenario) : Unit = {
+  def startScenario(scenario: Scenario): Unit = {
     currentScenario = Some(scenario)
     scenarioResults = Seq.empty
   }
 
-  def checkContent(pageSource : String, filter : T => Boolean = _ => true) : Seq[T] = {
+  def checkContent(pageSource: String, filter: T => Boolean = _ => true): Seq[T] =
     currentScenario match {
       case Some(s) => {
         val stepResults = executeTest(pageSource).filter(filter)
@@ -46,9 +46,8 @@ trait CucumberAccessibilityTester[T] {
         Seq.empty[T]
       }
     }
-  }
 
-  def endScenario() : Unit = {
+  def endScenario(): Unit =
     currentScenario match {
       case Some(s) => {
         writeScenarioResults(s, scenarioResults)
@@ -60,12 +59,11 @@ trait CucumberAccessibilityTester[T] {
         logger.severe("endScenario has been called without startScenario so behaviour is undefined.")
       }
     }
-  }
 
   def printTotalResults(): Unit = {
     val color = if (totalResults > 0) "\u001B[37;41m" else ""
     val reset = "\u001B[0m"
-    println(s"""${prettyName()}: $color${totalResults} results found$reset""")
+    println(s"""${prettyName()}: $color$totalResults results found$reset""")
   }
 
   def executeTest(pageSource: String): Seq[T]

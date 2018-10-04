@@ -17,12 +17,12 @@
 package uk.gov.hmrc.accessibility
 
 trait AccessibilityReporter[T] {
-  val TableHeaderStart = """<table><thead><tr>"""
-  val TableHeaderEnd = """</tr></thead>"""
-  val TableFooter = """</tbody></table>"""
+  val TableHeaderStart   = """<table><thead><tr>"""
+  val TableHeaderEnd     = """</tr></thead>"""
+  val TableFooter        = """</tbody></table>"""
   val ReportName: String = "Accessibility summary"
   lazy val SummaryHeader = s"""<h3>$ReportName</h3><p>"""
-  val SummaryFooter = "</p>"
+  val SummaryFooter      = "</p>"
 
   def makeTable(data: Seq[T]): String = {
     var output = new StringBuilder(TableHeaderStart)

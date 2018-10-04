@@ -24,28 +24,21 @@ object HtmlValidationFilters extends ResultFilters[HtmlValidationError] {
                | have a “rel” attribute that contains the value
                | “icon” or the value “apple-touch-icon”.""".stripMargin.replace("\n", "")
 
-  def headerFooterFilter : PartialFunction[HtmlValidationError, Boolean] = {
-    case HtmlValidationError(_, _, _, `headerIcon`, _) => false
-    case HtmlValidationError(_, _, _,
-      """The “banner” role is unnecessary for element “header”.""", _) => false
-    case HtmlValidationError(_, _, _,
-      """The “navigation” role is unnecessary for element “nav”.""", _) => false
-    case HtmlValidationError(_, _, _,
-      """The “main” role is unnecessary for element “main”.""", _) => false
-    case HtmlValidationError(_, _, _,
-      """The “contentinfo” role is unnecessary for element “footer”.""", _) => false
+  def headerFooterFilter: PartialFunction[HtmlValidationError, Boolean] = {
+    case HtmlValidationError(_, _, _, `headerIcon`, _)                                                      => false
+    case HtmlValidationError(_, _, _, """The “banner” role is unnecessary for element “header”.""", _)      => false
+    case HtmlValidationError(_, _, _, """The “navigation” role is unnecessary for element “nav”.""", _)     => false
+    case HtmlValidationError(_, _, _, """The “main” role is unnecessary for element “main”.""", _)          => false
+    case HtmlValidationError(_, _, _, """The “contentinfo” role is unnecessary for element “footer”.""", _) => false
   }
 
-  def knownErrorsFilter : PartialFunction[HtmlValidationError, Boolean] = {
+  def knownErrorsFilter: PartialFunction[HtmlValidationError, Boolean] = {
     // We include the "list" role on ul and ol because of a VoiceOver bug
-    case HtmlValidationError(_, _, _,
-      """The “list” role is unnecessary for element “ul”.""", _) => false
-    case HtmlValidationError(_, _, _,
-    """The “list” role is unnecessary for element “ol”.""", _) => false
+    case HtmlValidationError(_, _, _, """The “list” role is unnecessary for element “ul”.""", _) => false
+    case HtmlValidationError(_, _, _, """The “list” role is unnecessary for element “ol”.""", _) => false
 
     // The polyfill for old browsers causes the below validation error
-    case HtmlValidationError(_, _, _,
-    """The “button” role is unnecessary for element “summary”.""", _) => false
+    case HtmlValidationError(_, _, _, """The “button” role is unnecessary for element “summary”.""", _) => false
   }
 
 }

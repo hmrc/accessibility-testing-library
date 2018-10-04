@@ -25,7 +25,9 @@ import uk.gov.hmrc.accessibility.{AccessibilityChecker, CachingChecker, Cucumber
 object AuditTester {
   val logger: Logger = Logger.getLogger(getClass.getName)
 
-  def initialise(driver: WebDriver, testerConstructor: (WebDriver with JavascriptExecutor => AuditTester) = new AuditTester(_)): Option[AuditTester] = {
+  def initialise(
+    driver: WebDriver,
+    testerConstructor: (WebDriver with JavascriptExecutor => AuditTester) = new AuditTester(_)): Option[AuditTester] =
     try {
       driver.asInstanceOf[JavascriptExecutor] // Forces cast to the see if type actually matches
       val executor = driver.asInstanceOf[WebDriver with JavascriptExecutor]
@@ -39,26 +41,25 @@ object AuditTester {
         None
       }
     }
-  }
 }
 
-class AuditTester(driver: WebDriver with JavascriptExecutor,
-                  checkerCons: (WebDriver with JavascriptExecutor => AccessibilityChecker[AuditResult]) =
-                  driver => new CachingChecker[AuditResult](new CodeSniffer(driver)))
-  extends CucumberAccessibilityTester[AuditResult] {
+class AuditTester(
+  driver: WebDriver with JavascriptExecutor,
+  checkerCons: (WebDriver with JavascriptExecutor => AccessibilityChecker[AuditResult]) = driver =>
+    new CachingChecker[AuditResult](new CodeSniffer(driver)))
+    extends CucumberAccessibilityTester[AuditResult] {
   val checker: AccessibilityChecker[AuditResult] = checkerCons(driver)
 
-  override def executeTest(pageSource: String): Seq[AuditResult] = {
+  override def executeTest(pageSource: String): Seq[AuditResult] =
     checker.run(pageSource)
-  }
 
-  def writeStepResults(scenario : Scenario, results : Seq[AuditResult]) : Unit = {
-    scenario.write(s"""<h3>Audit: Found ${results.size} issues on "${driver.getTitle}" (${driver.getCurrentUrl})</h3>\n${AuditReporter.makeTable(results)}""")
-  }
+  def writeStepResults(scenario: Scenario, results: Seq[AuditResult]): Unit =
+    scenario.write(
+      s"""<h3>Audit: Found ${results.size} issues on "${driver.getTitle}" (${driver.getCurrentUrl})</h3>\n${AuditReporter
+        .makeTable(results)}""")
 
-  override def writeScenarioResults(scenario: Scenario, results: Seq[AuditResult]): Unit = {
+  override def writeScenarioResults(scenario: Scenario, results: Seq[AuditResult]): Unit =
     scenario.write(AuditReporter.makeSummary(scenarioResults))
-  }
 
   override def prettyName(): String = "Audit Tester"
 }

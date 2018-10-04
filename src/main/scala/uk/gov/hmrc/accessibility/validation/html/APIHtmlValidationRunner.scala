@@ -24,7 +24,6 @@ import uk.gov.hmrc.accessibility.validation.ValidationRunner
 class APIHtmlValidationRunner extends ValidationRunner {
   private val validator = new EmbeddedValidator
 
-  def run(source: String): String = {
+  def run(source: String): String =
     validator.validate(new ByteArrayInputStream(source.getBytes("UTF-8")))
-  }
 }

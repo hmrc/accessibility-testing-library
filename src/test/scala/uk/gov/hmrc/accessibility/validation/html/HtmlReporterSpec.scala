@@ -44,15 +44,14 @@ class HtmlReporterSpec extends WordSpec with Matchers with MockitoSugar {
     }
   }
 
-  private def checkTableHead(doc : Document): Unit = {
+  private def checkTableHead(doc: Document): Unit = {
     doc.getElementsByTag("table").size() shouldBe 1
     doc.getElementsByTag("thead").size() shouldBe 1
-    doc.select("thead tr").size() shouldBe 1
+    doc.select("thead tr").size()        shouldBe 1
   }
 
-  private def checkTableRowCount(doc : Document, errors : Int): Unit = {
+  private def checkTableRowCount(doc: Document, errors: Int): Unit =
     doc.getElementsContainingOwnText("extract>").size() shouldBe errors
-  }
 
   val tables = Table(
     ("errors", "message"),
@@ -63,9 +62,9 @@ class HtmlReporterSpec extends WordSpec with Matchers with MockitoSugar {
   )
 
   "makeTable" should {
-    forAll(tables) {(errors, message) =>
+    forAll(tables) { (errors, message) =>
       message in {
-        val result = makeTable(Seq.fill(errors)(validationError))
+        val result           = makeTable(Seq.fill(errors)(validationError))
         val output: Document = Jsoup.parse(result)
         checkTableHead(output)
         checkTableRowCount(output, errors)

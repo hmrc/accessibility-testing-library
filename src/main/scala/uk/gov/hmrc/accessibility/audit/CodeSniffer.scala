@@ -26,12 +26,12 @@ import scala.collection.JavaConverters._
 import scala.io.Source
 
 class CodeSniffer(driver: WebDriver with JavascriptExecutor) extends AccessibilityChecker[AuditResult] {
-  private val FilePath = "/HtmlCodeSniffer.js"
+  private val FilePath   = "/HtmlCodeSniffer.js"
   private val JavaScript = Source.fromInputStream(getClass.getResourceAsStream(FilePath)).getLines().mkString("\n")
-  private val CSCommand = "window.HTMLCS_RUNNER.run('WCAG2AA');"
-  private val LogRegex = """^.*?"\[HTMLCS\]\s*(.*)\|(.*)\|(.*)\|(.*)\|(.*)\|(.*)"""".r
+  private val CSCommand  = "window.HTMLCS_RUNNER.run('WCAG2AA');"
+  private val LogRegex   = """^.*?"\[HTMLCS\]\s*(.*)\|(.*)\|(.*)\|(.*)\|(.*)\|(.*)"""".r
 
-  override def run(pageSource : String): Seq[AuditResult] = {
+  override def run(pageSource: String): Seq[AuditResult] = {
     driver.manage().logs().get("browser") // Clear the unrelated logs
     driver.executeScript(JavaScript)
     driver.executeScript(CSCommand)
@@ -39,15 +39,15 @@ class CodeSniffer(driver: WebDriver with JavascriptExecutor) extends Accessibili
     processLogs(logs)
   }
 
-  def processLogs(logs: Seq[LogEntry]): Seq[AuditResult] = {
-    logs.map(_.getMessage)
+  def processLogs(logs: Seq[LogEntry]): Seq[AuditResult] =
+    logs
+      .map(_.getMessage)
       .map(_.replace("\\u003C", "&#x003C;").replace("\\\"", "\"")) // Undoing escaping in HtmlCodeSniffer
       .flatMap {
-      case LogRegex(level, standard, element, identifier, description, context) =>
-        Some(AuditResult(level, standard, element, identifier, description, context))
-      case _ => None
-    }
+        case LogRegex(level, standard, element, identifier, description, context) =>
+          Some(AuditResult(level, standard, element, identifier, description, context))
+        case _ => None
+      }
       .filter(_.level != "NOTICE")
       .sortBy(_.level)
-  }
 }

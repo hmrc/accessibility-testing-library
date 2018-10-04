@@ -31,48 +31,45 @@ import uk.gov.hmrc.accessibility.validation.ValidationRunner
 class HtmlValidationTesterSpec extends WordSpec with Matchers with MockitoSugar {
 
   class BaseDriver extends WebDriver with JavascriptExecutor {
-    override def executeAsyncScript(script: String, args: AnyRef*): AnyRef = {
+    override def executeAsyncScript(script: String, args: AnyRef*): AnyRef =
       AnyRef
-    }
     override def executeScript(script: String, args: AnyRef*): AnyRef = ???
-    override def getPageSource: String = ???
-    override def findElements(by: By): util.List[WebElement] = ???
-    override def getWindowHandle: String = ???
-    override def get(url: String): Unit = ???
-    override def manage(): Options = ???
-    override def getWindowHandles: util.Set[String] = ???
-    override def switchTo(): TargetLocator = ???
-    override def close(): Unit = ???
-    override def quit(): Unit = ???
-    override def getCurrentUrl: String = ???
-    override def navigate(): Navigation = ???
-    override def getTitle: String = ???
-    override def findElement(by: By): WebElement = ???
+    override def getPageSource: String                                = ???
+    override def findElements(by: By): util.List[WebElement]          = ???
+    override def getWindowHandle: String                              = ???
+    override def get(url: String): Unit                               = ???
+    override def manage(): Options                                    = ???
+    override def getWindowHandles: util.Set[String]                   = ???
+    override def switchTo(): TargetLocator                            = ???
+    override def close(): Unit                                        = ???
+    override def quit(): Unit                                         = ???
+    override def getCurrentUrl: String                                = ???
+    override def navigate(): Navigation                               = ???
+    override def getTitle: String                                     = ???
+    override def findElement(by: By): WebElement                      = ???
   }
 
   class EmptyPageDriver extends BaseDriver {
-    override def getPageSource: String = {
+    override def getPageSource: String =
       ""
-    }
-    override def getTitle: String = "Empty page"
+    override def getTitle: String      = "Empty page"
     override def getCurrentUrl: String = "emptypage.com"
   }
 
   class NonEmptyPageDriver extends EmptyPageDriver {
-    override def getPageSource: String = {
+    override def getPageSource: String =
       "A non-empty page"
-    }
-    override def getTitle: String = "Non-empty page"
+    override def getTitle: String      = "Non-empty page"
     override def getCurrentUrl: String = "nonemptypage.com"
   }
 
-  val emptyPageDriver = new EmptyPageDriver
+  val emptyPageDriver    = new EmptyPageDriver
   val nonEmptyPageDriver = new NonEmptyPageDriver
 
   "the companion object" should {
 
     "initialise with a compatible driver" in {
-      HtmlValidationTester.initialise(emptyPageDriver) shouldBe defined
+      HtmlValidationTester.initialise(emptyPageDriver)    shouldBe defined
       HtmlValidationTester.initialise(nonEmptyPageDriver) shouldBe defined
     }
 
@@ -80,8 +77,8 @@ class HtmlValidationTesterSpec extends WordSpec with Matchers with MockitoSugar 
 
   "the tester class" should {
     val scenario = mock[Scenario]
-    val runner = mock[ValidationRunner]
-    val checker = mock[AccessibilityChecker[HtmlValidationError]]
+    val runner   = mock[ValidationRunner]
+    val checker  = mock[AccessibilityChecker[HtmlValidationError]]
 
     val tester = new HtmlValidationTester(emptyPageDriver, runner, (_) => checker)
 

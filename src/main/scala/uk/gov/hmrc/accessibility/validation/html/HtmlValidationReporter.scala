@@ -28,15 +28,13 @@ object HtmlValidationReporter extends AccessibilityReporter[HtmlValidationError]
     "Location"
   )
 
-  override def rowValues(item: HtmlValidationError): Seq[String] = {
+  override def rowValues(item: HtmlValidationError): Seq[String] =
     Seq(
       item.message,
       item.extract.replace("\u003C", "&#x003C;"),
       s"${item.line}:${item.startCol}-${item.endCol}"
     )
-  }
 
-  override def summaryContent(data: Seq[HtmlValidationError]): String = {
+  override def summaryContent(data: Seq[HtmlValidationError]): String =
     s"There were ${data.size} issue(s)."
-  }
 }

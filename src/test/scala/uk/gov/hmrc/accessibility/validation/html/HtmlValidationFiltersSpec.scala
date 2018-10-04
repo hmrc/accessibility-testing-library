@@ -22,25 +22,25 @@ import uk.gov.hmrc.accessibility.validation.html.HtmlValidationFilters._
 
 class HtmlValidationFiltersSpec extends WordSpec with Matchers with MockitoSugar {
 
-  private lazy val combinedResults : Seq[HtmlValidationError] = dummyErrors ++ headerFooterErrors ++ knownErrors
+  private lazy val combinedResults: Seq[HtmlValidationError] = dummyErrors ++ headerFooterErrors ++ knownErrors
 
-  private val headerFooterErrors : Seq[HtmlValidationError] = Seq (
+  private val headerFooterErrors: Seq[HtmlValidationError] = Seq(
     HtmlValidationError(1, 2, 3, HtmlValidationFilters.headerIcon, ""),
-    HtmlValidationError(1, 2, 3, """The “banner” role is unnecessary for element “header”.""" ,""),
-    HtmlValidationError(1, 2, 3, """The “navigation” role is unnecessary for element “nav”.""" ,""),
-    HtmlValidationError(1, 2, 3, """The “main” role is unnecessary for element “main”.""" ,""),
-    HtmlValidationError(1, 2, 3, """The “contentinfo” role is unnecessary for element “footer”.""" ,"")
+    HtmlValidationError(1, 2, 3, """The “banner” role is unnecessary for element “header”.""", ""),
+    HtmlValidationError(1, 2, 3, """The “navigation” role is unnecessary for element “nav”.""", ""),
+    HtmlValidationError(1, 2, 3, """The “main” role is unnecessary for element “main”.""", ""),
+    HtmlValidationError(1, 2, 3, """The “contentinfo” role is unnecessary for element “footer”.""", "")
   )
 
-  private val knownErrors : Seq[HtmlValidationError] = Seq (
+  private val knownErrors: Seq[HtmlValidationError] = Seq(
     HtmlValidationError(1, 2, 3, """The “list” role is unnecessary for element “ul”.""", ""),
     HtmlValidationError(1, 2, 3, """The “list” role is unnecessary for element “ol”.""", ""),
     HtmlValidationError(1, 2, 3, """The “button” role is unnecessary for element “summary”.""", "")
   )
 
-  private val dummyErrors : Seq[HtmlValidationError] = Seq(
-    HtmlValidationError(1, 2, 3, "messageA" , "extractA"),
-    HtmlValidationError(1, 2, 3, "messageB" , "extractB")
+  private val dummyErrors: Seq[HtmlValidationError] = Seq(
+    HtmlValidationError(1, 2, 3, "messageA", "extractA"),
+    HtmlValidationError(1, 2, 3, "messageB", "extractB")
   )
 
   "emptyFilter" should {
@@ -52,16 +52,16 @@ class HtmlValidationFiltersSpec extends WordSpec with Matchers with MockitoSugar
   "headerFooterFilter" should {
     "only remove results about the header and footer" in {
       val filtered = combinedResults.filter(headerFooterFilter orElse emptyFilter)
-      filtered.size should be (combinedResults.size - headerFooterErrors.size)
-      filtered should not contain headerFooterErrors
+      filtered.size should be(combinedResults.size - headerFooterErrors.size)
+      filtered      should not contain headerFooterErrors
     }
   }
 
   "knownErrorsFilter" should {
     "only remove results about known errors" in {
       val filtered = combinedResults.filter(knownErrorsFilter orElse emptyFilter)
-      filtered.size should be (combinedResults.size - knownErrors.size)
-      filtered should not contain knownErrors
+      filtered.size should be(combinedResults.size - knownErrors.size)
+      filtered      should not contain knownErrors
     }
   }
 }

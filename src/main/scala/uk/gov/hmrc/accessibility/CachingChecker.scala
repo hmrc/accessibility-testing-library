@@ -17,9 +17,9 @@
 package uk.gov.hmrc.accessibility
 import java.security.MessageDigest
 
-class CachingChecker[T](checker : AccessibilityChecker[T]) extends AccessibilityChecker[T] {
+class CachingChecker[T](checker: AccessibilityChecker[T]) extends AccessibilityChecker[T] {
 
-  private lazy val digest = MessageDigest.getInstance("SHA1")
+  private lazy val digest        = MessageDigest.getInstance("SHA1")
   var cache: Map[String, Seq[T]] = Map.empty
 
   override def run(pageSource: String): Seq[T] = {
@@ -31,11 +31,14 @@ class CachingChecker[T](checker : AccessibilityChecker[T]) extends Accessibility
     })
   }
 
-  private def hashcodeOf(source: String): String = {
-    digest.digest(source.getBytes()).map(0xFF & _).map {
-      "%02x".format(_)
-    }.foldLeft("") {
-      _ + _
-    }
-  }
+  private def hashcodeOf(source: String): String =
+    digest
+      .digest(source.getBytes())
+      .map(0xFF & _)
+      .map {
+        "%02x".format(_)
+      }
+      .foldLeft("") {
+        _ + _
+      }
 }
