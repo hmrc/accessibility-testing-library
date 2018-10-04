@@ -1,11 +1,15 @@
-val appName = "accessibility-testing-library"
+val libName = "accessibility-testing-library"
 
-lazy val microservice = Project(appName, file("."))
-  .enablePlugins(SbtAutoBuildPlugin, SbtGitVersioning)
+lazy val microservice = Project(libName, file("."))
+  .enablePlugins(SbtAutoBuildPlugin, SbtGitVersioning, SbtArtifactory)
   .settings(
-    scalaVersion        := "2.11.11",
+    majorVersion                     := 0,
+    makePublicallyAvailableOnBintray := true
+  )
+  .settings(
+    scalaVersion        := "2.11.12",
     libraryDependencies ++= LibDependencies.test,
-    crossScalaVersions  := Seq("2.11.7"),
+    crossScalaVersions  := Seq("2.11.12"),
     resolvers           ++= Seq("hmrc-releases-bintray" at "https://hmrc.bintray.com/releases/")
   )
   .settings(scoverageSettings)
