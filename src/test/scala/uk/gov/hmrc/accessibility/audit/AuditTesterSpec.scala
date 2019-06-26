@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 HM Revenue & Customs
+ * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -104,6 +104,10 @@ class AuditTesterSpec extends WordSpec with Matchers with MockitoSugar {
         tester.scenarioResults shouldEqual Seq.empty
       }
 
+      "start with a passing scenario" in {
+        tester.scenarioFailed shouldBe false
+      }
+
       "not write results if end scenario is called before start scenario" in {
         tester.endScenario()
         verify(scenario, times(0)).write(any())
@@ -118,12 +122,14 @@ class AuditTesterSpec extends WordSpec with Matchers with MockitoSugar {
       "have empty results when starting a new scenario" in {
         tester.startScenario(scenario)
         tester.scenarioResults shouldBe empty
+        tester.scenarioFailed shouldBe false
       }
 
       "have empty results after testing an empty page" in {
         val results = tester.checkContent(driver.getPageSource)
         results                shouldBe empty
         tester.scenarioResults shouldBe empty
+        tester.scenarioFailed shouldBe false
       }
 
       "have called the checker and driver once after testing one page" in {
@@ -135,9 +141,14 @@ class AuditTesterSpec extends WordSpec with Matchers with MockitoSugar {
         verify(scenario, times(0)).write(any())
       }
 
+      "have not failed a scenario with no results" in {
+        tester.scenarioFailed shouldBe false
+      }
+
       "have an empty results when ending a scenario" in {
         tester.endScenario()
         tester.scenarioResults shouldEqual Seq.empty
+        tester.scenarioFailed shouldBe false
       }
     }
 
@@ -183,6 +194,10 @@ class AuditTesterSpec extends WordSpec with Matchers with MockitoSugar {
       "have the correct accumulated results after calling checkContent" in {
         tester.checkContent(driver.getPageSource)
         tester.scenarioResults shouldBe warnings ++ errors
+      }
+
+      "have failed a scenario with results" in {
+        tester.scenarioFailed shouldBe false
       }
 
       "call the underlying code sniffer and driver once when checking one page" in {
