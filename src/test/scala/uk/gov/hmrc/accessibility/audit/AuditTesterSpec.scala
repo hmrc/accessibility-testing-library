@@ -196,10 +196,6 @@ class AuditTesterSpec extends WordSpec with Matchers with MockitoSugar {
         tester.scenarioResults shouldBe warnings ++ errors
       }
 
-      "have failed a scenario with results" in {
-        tester.scenarioFailed shouldBe false
-      }
-
       "call the underlying code sniffer and driver once when checking one page" in {
         verify(codeSniffer, times(1)).run(any())
         verify(driver, times(1)).getPageSource
@@ -213,6 +209,10 @@ class AuditTesterSpec extends WordSpec with Matchers with MockitoSugar {
       "write a summary for the scenario upon completion" in {
         tester.endScenario()
         verify(scenario, times(1)).write(contains("There were 2 error(s) and 1 warning(s)"))
+      }
+
+      "have failed a scenario with results after ending scenario" in {
+        tester.scenarioFailed shouldBe true
       }
     }
   }
