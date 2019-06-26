@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 HM Revenue & Customs
+ * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,10 +25,12 @@ trait CucumberAccessibilityTester[T] {
   var currentScenario: Option[Scenario] = None
   var scenarioResults: Seq[T]           = Seq.empty
   var totalResults: Int                 = 0
+  var scenarioFailed: Boolean           = false
 
   def startScenario(scenario: Scenario): Unit = {
     currentScenario = Some(scenario)
     scenarioResults = Seq.empty
+    scenarioFailed  = false
   }
 
   def checkContent(pageSource: String, filter: T => Boolean = _ => true): Seq[T] =
@@ -51,6 +53,7 @@ trait CucumberAccessibilityTester[T] {
     currentScenario match {
       case Some(s) => {
         writeScenarioResults(s, scenarioResults)
+        scenarioFailed = scenarioResults.nonEmpty
         totalResults += scenarioResults.size
         scenarioResults = Seq.empty
         currentScenario = None
